@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "817131615994",
+    "project_id": "qaas-36031",
+    "storage_bucket": "qaas-36031.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817131615994:android:9857a66f18e01a6bc47b43",
+        "android_client_info": {
+          "package_name": "com.company.qaas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817131615994-qleo2bijvsci4ase00gpahigd3lvrhei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7KGV53yTjvvjoFGpcvDq3LVhLDM2koh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817131615994-qleo2bijvsci4ase00gpahigd3lvrhei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
