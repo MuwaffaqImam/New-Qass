@@ -5,6 +5,8 @@ import 'package:food_template/Screen/Template1/Bottom_Nav_Bar/bottomNavBar.dart'
 import 'package:food_template/Screen/Template1/Login_Screen/SignIn_Screen.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 
+import 'SignIn_Screen.dart';
+
 class ConfirmOtpPage extends StatefulWidget {
   @override
   _ConfirmOtpPageState createState() => _ConfirmOtpPageState();
@@ -129,7 +131,7 @@ class _ConfirmOtpPageState extends State<ConfirmOtpPage> {
                           onTap: () => Navigator.of(context).pushReplacement(
                               PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
-                                      signinTemplate1())),
+                                      signinPhoneTemplate1())),
                           child: Icon(
                             Icons.arrow_back_ios,
                             color: Colors.white,

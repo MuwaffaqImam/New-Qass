@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_template/_qaas/screens/Login_Screen/SignIn_Screen.dart';
 
 import 'Confirm_OTP_Screen.dart';
 import 'SignIn_Screen.dart';
@@ -221,7 +222,7 @@ class _signupTemplate1State extends State<signupTemplate1> {
                     InkWell(
                       onTap: () {
                         Navigator.of(context).pushReplacement(PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => signinTemplate1()));
+                            pageBuilder: (_, __, ___) => signinPhoneTemplate1()));
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

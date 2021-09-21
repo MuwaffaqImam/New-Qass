@@ -1,5 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:provider/provider.dart';
 
 import '../HomePageT5.dart';
@@ -18,80 +19,90 @@ class MenuScreen extends StatelessWidget {
     MenuItem(Icons.format_list_bulleted, 'Store'),
   ];
 
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanUpdate: (details) {
-        //on swiping left
-        if (details.delta.dx < -6) {
-          Provider.of<MenuController>(context, listen: true).toggle();
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.only(
-            top: 90,
-            left: 12,
-            bottom: 8,
-            right: MediaQuery.of(context).size.width / 2.9),
-        decoration: BoxDecoration(
-            gradient:
-                LinearGradient(colors: [Color(0xFFF07DA4), Color(0xFFF5AE87)])),
-        child: Column(
-          children: <Widget>[
-            InkWell(
-              onTap: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: CircularImage(
-                      NetworkImage(imageUrl),
-                    ),
-                  ),
-                  Column(
+    return Drawer(
+      child: Scaffold(
+
+        body: GestureDetector(
+          onPanUpdate: (details) {
+            //on swiping left
+            if (details.delta.dx < -6) {
+              Provider.of<MenuController>(context, listen: true).toggle();
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.only(
+                top: 90,
+                left: 12,
+                bottom: 8,
+                right: 8),
+//                right: MediaQuery.of(context).size.width / 2.9),
+            decoration: BoxDecoration(
+                gradient:
+                    LinearGradient(colors: [Color(0xFFF07DA4), Color(0xFFF5AE87)])),
+            child:
+
+            Column(
+              children: <Widget>[
+                InkWell(
+                  onTap: () {},
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        'Dakota Jonson',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "Sofia",
-                          fontSize: 20,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: CircularImage(
+                          NetworkImage(imageUrl),
                         ),
                       ),
-                      Text(
-                        'dakota@gmail.com',
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontFamily: "Sofia",
-                          fontSize: 15,
-                        ),
+                      SizedBox(width: Dimens.space20,),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Dakota Jonson',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "Sofia",
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            'dakota@gmail.com',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontFamily: "Sofia",
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Spacer(),
-            Column(
-              children: <Widget>[
-                _listText("Notification", EvaIcons.bell),
-                _listText("Call center", EvaIcons.phone),
-                _listText("Settings", EvaIcons.settings),
-                _listText("Favorite", EvaIcons.heart),
+                ),
+                Spacer(),
+                Column(
+                  children: <Widget>[
+                    _listText("Notification", EvaIcons.bell),
+                    _listText("Call center", EvaIcons.phone),
+                    _listText("Settings", EvaIcons.settings),
+                    _listText("Favorite", EvaIcons.heart),
+                  ],
+                ),
+                Spacer(),
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: _listText("Logout", Icons.exit_to_app)),
               ],
             ),
-            Spacer(),
-            InkWell(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: _listText("Logout", Icons.exit_to_app)),
-          ],
+          ),
         ),
       ),
     );
