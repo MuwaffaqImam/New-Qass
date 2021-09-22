@@ -25,6 +25,7 @@ class TenantsSuccess extends TenantsState {
         categoryList.add(element);
         map.putIfAbsent(category, () => categoryList);
       }
+      //
        categoryList = [];
     });
     return map;
