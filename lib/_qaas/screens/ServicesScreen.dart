@@ -6,13 +6,13 @@ import 'package:food_template/Data_Model/categoryDetail.dart';
 import 'package:food_template/_qaas/bloc/tenants/tenants_bloc.dart';
 import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/models/Branch.dart';
+import 'package:food_template/_qaas/models/Service.dart';
 import 'package:food_template/_qaas/res/Fonts.dart';
-import 'package:food_template/_qaas/screens/ServicesScreen.dart';
 
-class BranchesScreen extends StatelessWidget {
+class ServiceScreen extends StatelessWidget {
   final String title;
 
-  BranchesScreen({this.title});
+  ServiceScreen({this.title});
 
   Widget recommended() {
     return BlocBuilder<TenantsBloc, TenantsState>(
@@ -28,8 +28,20 @@ class BranchesScreen extends StatelessWidget {
         else if (state is Failure) {
           return const Center(child: Text('Error'));
         } else {
-          List<Branch> branches =
-              (state as TenantsBranchesSuccess).branchesList;
+          List<ServiceProvided> branches =
+              (state as ServicesSuccess).servicesList;
+          if (branches.isEmpty)
+            return Center(
+              child: Text(
+                LocalManager.translate(word: 'لا يوجد خدمات'),
+                style: TextStyle(
+                    color: Colors.redAccent,
+                    fontFamily: Fonts.elMessriFamily,
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.w700),
+              ),
+            );
+
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +52,7 @@ class BranchesScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 22.0),
                 child: Text(
-                  LocalManager.translate(word: 'الفروع'),
+                  LocalManager.translate(word: 'الخدمات'),
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: Fonts.elMessriFamily,
@@ -55,7 +67,7 @@ class BranchesScreen extends StatelessWidget {
                     shrinkWrap: true,
                     primary: false,
                     itemBuilder: (ctx, index) {
-                      return BranchCard(branches[index]);
+                      return ServiceCard(branches[index]);
                     },
                     itemCount: branches.length,
                   ),
@@ -70,8 +82,6 @@ class BranchesScreen extends StatelessWidget {
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -89,27 +99,6 @@ class BranchesScreen extends StatelessWidget {
       ),
     );
 
-    var _imageSlider = Container(
-      height: 292.0,
-      child: new Carousel(
-        boxFit: BoxFit.cover,
-        dotColor: Colors.white.withOpacity(0.8),
-        dotSize: 5.5,
-        dotSpacing: 16.0,
-        dotBgColor: Colors.transparent,
-        showIndicator: true,
-        overlayShadow: true,
-        overlayShadowColors: Color(0xFF1E2026).withOpacity(0.1),
-        overlayShadowSize: 0.9,
-        images: [
-          AssetImage("assets/Template1/banner/7.jpg"),
-          AssetImage("assets/Template1/banner/4.jpg"),
-          AssetImage("assets/Template1/banner/5.jpg"),
-          AssetImage("assets/Template1/banner/6.jpg"),
-        ],
-      ),
-    );
-
     return Scaffold(
       appBar: _appBar,
       backgroundColor: Color(0xFF1E2026),
@@ -118,7 +107,6 @@ class BranchesScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _imageSlider,
             recommended(),
           ],
         ),
@@ -127,7 +115,7 @@ class BranchesScreen extends StatelessWidget {
   }
 }
 
-class BranchCard extends StatelessWidget {
+class ServiceCard extends StatelessWidget {
   var _txtStyleTitle = TextStyle(
     color: Colors.white,
     fontFamily: Fonts.elMessriFamily,
@@ -142,31 +130,15 @@ class BranchCard extends StatelessWidget {
     fontWeight: FontWeight.w600,
   );
 
-  Branch branch;
+  ServiceProvided service;
 
-  BranchCard(this.branch);
+  ServiceCard(this.service);
 
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
       child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(PageRouteBuilder(
-              pageBuilder: (_, __, ___) => new BlocProvider(
-                create: (_) => TenantsBloc()..add(TenantServices(branch.id)),
-                child: new ServiceScreen(
-                  title: branch.name,
-                ),
-              ),
-              transitionDuration: Duration(milliseconds: 600),
-              transitionsBuilder:
-                  (_, Animation<double> animation, __, Widget child) {
-                return Opacity(
-                  opacity: animation.value,
-                  child: child,
-                );
-              }));
-        },
+        onTap: () {},
         child: Container(
           height: 140.0,
           decoration: BoxDecoration(
@@ -192,7 +164,7 @@ class BranchCard extends StatelessWidget {
                       Container(
                           width: 220.0,
                           child: Text(
-                            branch.name,
+                            '${service.service.name}',
                             style: _txtStyleTitle,
                             overflow: TextOverflow.ellipsis,
                           )),
@@ -203,28 +175,13 @@ class BranchCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Icon(
-                              Icons.location_on_rounded,
+                              Icons.access_time_rounded,
                               size: 16.0,
                               color: Colors.white,
                             ),
-                            Padding(padding: EdgeInsets.only(top: 2.0,left: 8)),
-                            Text(branch.phone ?? 'عمان - الأردن',
-                                style: _txtStyleSub)
-                          ],
-                        ),
-                      ),
-                      Padding(padding: const EdgeInsets.only(top: 4.9),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.phone_android_rounded,
-                              size: 16.0,
-                              color: Colors.white,
-                            ),
-                            Padding(padding: EdgeInsets.only(top: 2.0,left: 8)),
-                            Text(branch.phone ?? '0799999999',
+                            Padding(
+                                padding: EdgeInsets.only(top: 2.0, left: 8)),
+                            Text('${service.startTime}',
                                 style: _txtStyleSub)
                           ],
                         ),
@@ -236,12 +193,33 @@ class BranchCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Icon(
-                              Icons.email_rounded,
+                              Icons.av_timer_rounded,
                               size: 16.0,
                               color: Colors.white,
                             ),
-                            Padding(padding: EdgeInsets.only(top: 2.0,left: 8)),
-                            Text(branch.email ?? 'm.zizo@edu.jo',
+                            Padding(
+                                padding: EdgeInsets.only(top: 2.0, left: 8)),
+                            Text(
+                                '${service.endTime}',
+                                style: _txtStyleSub)
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.9),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.description_rounded,
+                              size: 16.0,
+                              color: Colors.white,
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(top: 2.0, left: 8)),
+                            Text(
+                                '${service.service.description}',
                                 style: _txtStyleSub)
                           ],
                         ),
@@ -249,23 +227,23 @@ class BranchCard extends StatelessWidget {
                     ],
                   ),
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        LocalManager.translate(word: 'عددالأشخاص'),
+                        LocalManager.translate(word: 'إحجز تذكرة'),
                         style: TextStyle(
                             fontSize: 18.0,
                             color: Color(0xFFFF975D),
                             fontWeight: FontWeight.w500,
                             fontFamily: Fonts.elMessriFamily),
                       ),
-                      Text(
-                        '${branch.countersNumber}',
-                        style: TextStyle(
-                            fontSize: 60.0,
-                            color: Color(0xFFFF975D),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: Fonts.elMessriFamily),
+                      IconButton(
+                        icon: Icon(
+                          Icons.add_circle,
+                          size: 30,
+                          color: Color(0xFFFF975D),
+                        ),
+                        onPressed: () {},
                       ),
                     ],
                   ),
@@ -278,5 +256,3 @@ class BranchCard extends StatelessWidget {
     );
   }
 }
-
-

@@ -1,47 +1,38 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:food_template/Data_Model/categoryDetail.dart';
+import 'package:food_template/_qaas/res/Styles.dart';
 import 'package:shimmer/shimmer.dart';
 
 class BannerScreen1 extends StatefulWidget {
-  String image;
-  BannerScreen1({this.image});
+  final String pathToImage;
+
+  BannerScreen1({this.pathToImage});
+
   @override
   _BannerScreen1State createState({image}) => _BannerScreen1State();
 }
 
 /// if user click icon in category layout navigate to BannerScreen1 Layout
 class _BannerScreen1State extends State<BannerScreen1> {
-  ///
-  /// Get image data dummy from firebase server
-  ///
+  // Get image data dummy from firebase server
+  // TODO fix comments
   var imageNetwork = NetworkImage(
       "https://firebasestorage.googleapis.com/v0/b/beauty-look.appspot.com/o/Screenshot_20181005-213916.png?alt=media&token=f952caf0-2de7-417c-9c9e-3b6dcea953f4");
 
-  ///
-  /// check the condition is right or wrong for image loaded or no
-  ///
+  //check the condition is right or wrong for image loaded or no
   bool loadImage = true;
 
   // generates a new Random object
   final _random = new Random();
 
   /// custom text variable is make it easy a custom textStyle black font
-  static var _customTextStyleBlack = TextStyle(
-      fontFamily: "Sofia",
-      color: Colors.white,
-      fontWeight: FontWeight.w700,
-      fontSize: 15.0);
+  static var _customTextStyleBlack;
 
   /// Custom text blue in variable
-  static var _customTextStyle = TextStyle(
-      fontFamily: "Sofia",
-      fontWeight: FontWeight.w300,
-      color: Colors.white,
-      fontSize: 15.0);
+  static var _customTextStyle = MyTextStyle.buildStyle(color: Colors.white);
 
   ///
   /// SetState after imageNetwork loaded to change list card
@@ -67,7 +58,9 @@ class _BannerScreen1State extends State<BannerScreen1> {
           height: 292.0,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage(widget.image), fit: BoxFit.cover)),
+            image: AssetImage(widget.pathToImage),
+            fit: BoxFit.cover,
+          )),
         ),
         Container(
           height: 292.0,
@@ -99,7 +92,7 @@ class _BannerScreen1State extends State<BannerScreen1> {
             padding: const EdgeInsets.only(right: 20.0, left: 20.0, top: 20.0),
             child: Text(
               "Things You Could Like",
-              style: _customTextStyleBlack,
+              style: MyTextStyle.buildStyle(color: Colors.white),
             ),
           ),
           SingleChildScrollView(
@@ -249,7 +242,7 @@ class _BannerScreen1State extends State<BannerScreen1> {
                   ),
                   InkWell(
                     onTap: null,
-                    child: Text("See more", style: _customTextStyle),
+                    child: Text("See more", style: MyTextStyle.buildStyle(color: Colors.white)),
                   ),
                 ],
               ),

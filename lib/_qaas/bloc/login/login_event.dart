@@ -2,10 +2,7 @@
 
 import 'package:equatable/equatable.dart';
 
-class LoginEvent extends Equatable{
-  @override
-  // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
+class LoginEvent{
 }
 
 class LoginWithFacebook extends LoginEvent {}

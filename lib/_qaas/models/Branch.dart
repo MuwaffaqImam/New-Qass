@@ -2,14 +2,14 @@ class Branch {
 
   String id;
   String name;
-  Null address;
-  Null addressCountry;
-  Null phone;
-  Null email;
-  Null timeZone;
+  String address;
+  String addressCountry;
+  String phone;
+  String email;
+  String timeZone;
   int countersNumber;
   String tenantId;
-  Null tenant;
+  String tenant;
   String signalRToken;
 
   Branch({this.id,
@@ -25,17 +25,17 @@ class Branch {
     this.signalRToken});
 
   Branch.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    address = json['address'];
-    addressCountry = json['addressCountry'];
-    phone = json['phone'];
-    email = json['email'];
-    timeZone = json['timeZone'];
-    countersNumber = json['countersNumber'];
-    tenantId = json['tenantId'];
-    tenant = json['tenant'];
-    signalRToken = json['signalRToken'];
+    id = json['id'] ;
+    name = json['name'] ;
+    address = json['address'] ;
+    addressCountry = json['addressCountry'] ;
+    phone = json['phone'] ;
+    email = json['email'] ;
+    timeZone = json['timeZone'] ;
+    countersNumber = json['countersNumber'] ;
+    tenantId = json['tenantId'] ;
+    tenant = json['tenant'] ;
+    signalRToken = json['signalRToken'] ;
   }
 
   Map<String, dynamic> toJson() {

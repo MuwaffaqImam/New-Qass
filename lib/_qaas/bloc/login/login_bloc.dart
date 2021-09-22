@@ -21,7 +21,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is LoginWithFacebook) {
       yield LoginLoading();
       try {
-        // await loginWithFacebook();
         yield FacebookLoggedSuccess();
       } catch (_) {
         yield FacebookLoggedFailure();
@@ -160,9 +159,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 }
 
-
-
-///////////////////////////////////////////
 Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
   print('${Api.BASE_URL}${Api.REGISTER}');
 

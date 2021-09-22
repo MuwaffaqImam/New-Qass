@@ -345,7 +345,7 @@ class _HomeScreenT1State extends State<HomeScreenT1> {
                 onTap: () {
                   Navigator.of(context).push(PageRouteBuilder(
                       pageBuilder: (_, __, ___) => new BannerScreen1(
-                            image: i,
+                            pathToImage: i,
                           )));
                 },
                 child: Container(

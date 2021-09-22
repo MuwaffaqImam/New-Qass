@@ -6,8 +6,11 @@ abstract class TenantsEvent {}
 class TenantList extends TenantsEvent {}
 
 class TenantBranches extends TenantsEvent {
-  final String id;
-  TenantBranches(this.id);
+  final String tenantId;
+  TenantBranches(this.tenantId);
 }
 
-class TenantServices extends TenantsEvent {}
+class TenantServices extends TenantsEvent {
+  final String branchId;
+  TenantServices(this.branchId);
+}

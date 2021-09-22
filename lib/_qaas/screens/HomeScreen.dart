@@ -397,7 +397,6 @@ class _HomeScreenT1State extends State<HomeScreenT1> {
         else if (state is Failure) {
           return const Center(child: Text('no posts'));
         } else {
-          List<Tenant> tenants = (state as TenantsSuccess).tenantsList;
           HashMap<String, List<Tenant>> map =
               (state as TenantsSuccess).getTenentsGrouped();
           return ListView.builder(

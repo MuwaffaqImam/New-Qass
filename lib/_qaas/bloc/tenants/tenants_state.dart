@@ -35,6 +35,13 @@ class TenantsBranchesSuccess extends TenantsState {
   final List<Branch> branchesList;
 
   TenantsBranchesSuccess(this.branchesList);
-
-
 }
+
+class ServicesSuccess extends TenantsState {
+  final List<ServiceProvided> servicesList;
+
+  ServicesSuccess(this.servicesList);
+}
+
+
+
