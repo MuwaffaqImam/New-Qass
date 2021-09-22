@@ -5,12 +5,15 @@ import 'package:food_template/Screen/Template1/Login_Screen/SignIn_Screen.dart';
 import 'package:food_template/_qaas/bloc/login/login_bloc.dart';
 import 'package:food_template/_qaas/bloc/login/login_event.dart';
 import 'package:food_template/_qaas/bloc/login/login_state.dart';
+import 'package:food_template/_qaas/res/constant.dart';
+import 'package:food_template/_qaas/res/dimens.dart';
+import 'package:food_template/_qaas/res/general.dart';
+import 'package:food_template/_qaas/screens/Login_Screen/SignIn_Screen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:food_template/Screen/Template4/Style/ThemeT4.dart' as Style;
 
+import 'Login_Screen/Signup_Screen.dart';
 import 'common/dialog/error_dialog.dart';
-
-
 
 class chooseLogin extends StatefulWidget {
   chooseLogin({Key key}) : super(key: key);
@@ -21,6 +24,9 @@ class chooseLogin extends StatefulWidget {
 
 class _chooseLoginState extends State<chooseLogin>
     with TickerProviderStateMixin {
+  TextEditingController emailController, passwordController;
+  final _formKey = GlobalKey<FormState>();
+
   /// Declare Animation
   AnimationController animationController;
   var tapLogin = 0;
@@ -33,7 +39,11 @@ class _chooseLoginState extends State<chooseLogin>
   /// Declare animation in initState
   void initState() {
     _loginBloc = BlocProvider.of<LoginBloc>(context);
-    pr = new ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: true);
+
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: true);
 
     // TODO: implement initState
     /// Animation proses duration
@@ -72,220 +82,302 @@ class _chooseLoginState extends State<chooseLogin>
     mediaQuery.devicePixelRatio;
     mediaQuery.size.height;
     mediaQuery.size.width;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: BlocBuilder<LoginBloc, LoginState>(
-        bloc: _loginBloc,
-        builder: (_, state) {
-          if (state is LoggedSuccess) {
-            //go  to profile
-          } else if (state is LoggedFailure) {
+    return SafeArea(
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: BlocBuilder<LoginBloc, LoginState>(
+            bloc: _loginBloc,
+            builder: (_, state) {
+              if (state is LoggedSuccess) {
+                //go  to profile
+              } else if (state is LoggedFailure) {
+                Future.delayed(Duration(milliseconds: 300), () {
+                  General.callErrorDialog(context, state.errorMessage);
+                  _loginBloc.add(Reset());
+                });
+              }
 
-            Future.delayed(Duration(milliseconds: 300),(){
-
-              callErrorDialog(context, state.errorMessage);
-            });
-
-
-          }
-
-          return Stack(
-            children: <Widget>[
-              ///
-              /// Set background video
-              ///
-              Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                            "assets/Template1/image/chosseBackground.jpeg"),
-                        fit: BoxFit.cover)),
-              ),
-              Container(
-                child: Container(
-                  margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(0.0, 1.0),
-                      // stops: [0.0, 1.0],
-                      colors: <Color>[
-                        Color(0xFF1E2026).withOpacity(0.1),
-                        Color(0xFF1E2026).withOpacity(0.3),
-                        Colors.black.withOpacity(0.6),
-                        Colors.black.withOpacity(0.7),
-                      ],
-                    ),
+              return Stack(
+                children: <Widget>[
+                  ///
+                  /// Set background video
+                  ///
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                                "assets/Template1/image/chosseBackground.jpeg"),
+                            fit: BoxFit.cover)),
                   ),
-
-                  /// Set component layout
-                  child: ListView(
-                    padding: EdgeInsets.all(0.0),
-                    children: <Widget>[
-                      Stack(
-                        alignment: AlignmentDirectional.bottomCenter,
-                        children: <Widget>[
-                          Stack(
-                            alignment: AlignmentDirectional.bottomCenter,
-                            children: <Widget>[
-                              Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 1.0, bottom: 140.0),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 20.0),
-                                        child: Text(
-                                          "DELIVERED\nFAST FOOD\nTO YOUR\nDOOR.",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 37.0,
-                                              fontWeight: FontWeight.w800,
-                                              fontFamily: "Sofia",
-                                              letterSpacing: 1.3),
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 20.0, top: 20.0, right: 20.0),
-                                        child: Text(
-                                          "Set exact location to find the right restaurant near you.",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.w200,
-                                              fontFamily: "Sofia",
-                                              letterSpacing: 1.3),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: 220.0)),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  /// To create animation if user tap == animation play (Click to open code)
-                                  tapLogin == 0
-                                      ? Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            splashColor: Colors.white,
-                                            onTap: () {
-                                              setState(() {
-                                                tapLogin = 1;
-                                              });
-                                              _Playanimation();
-                                              return tapLogin;
-                                            },
-                                            child: ButtonCustom(
-                                              txt: "Login",
-                                              gradient1: Color(0xFFFEE140),
-                                              gradient2: Color(0xFFFA709A),
-                                              border: Colors.transparent,
-                                            ),
-                                          ),
-                                        )
-                                      : AnimationSplashSignup(
-                                          animationController:
-                                              animationController.view,
-                                        ),
-                                  Padding(padding: EdgeInsets.only(top: 70.0)),
-                                ],
-                              ),
-
-                              /// To create animation if user tap == animation play (Click to open code)
-//                          tapSignup == 0
-//                              ? Material(
-//                                  color: Colors.transparent,
-//                                  child: InkWell(
-//                                    splashColor: Colors.white,
-//                                    onTap: () {
-//                                      _loginBloc.add(LoginWithFacebook());
-//
-////                                      setState(() {
-////                                        tapSignup = 1;
-////                                      });
-////
-//////                                      _Playanimation();
-////                                      return tapSignup;
-//                                    },
-//                                    child: ButtonCustom(
-//                                      txt: "Connect with Faceboock",
-//                                      gradient1: Colors.blue,
-//                                      gradient2: Colors.blueAccent,
-//                                      border: Colors.transparent,
-//                                    ),
-//                                  ),
-//                                )
-//                              : AnimationSplashLogin(
-//                                  animationController: animationController.view,
-//                                ),
-
-                              Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.white,
-                                    onTap: () {
-                                      _loginBloc.add(LoginWithGoogle());
-
-//
-                                    },
-                                    child: ButtonCustom(
-                                      txt: "Connect with Google",
-                                      gradient1: Colors.red,
-                                      gradient2: Colors.redAccent,
-                                      border: Colors.transparent,
-                                    ),
-                                  ),
-
-                                ),
-                              )
+                  Container(
+                      height: double.infinity,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: FractionalOffset(0.0, 0.0),
+                            end: FractionalOffset(0.0, 1.0),
+                            // stops: [0.0, 1.0],
+                            colors: <Color>[
+//                          Color(0xFF1E2026).withOpacity(0.1),
+//                          Color(0xFF1E2026).withOpacity(0.3),
+                              Colors.black.withOpacity(0.7),
+                              Colors.black.withOpacity(0.7),
                             ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              state is LoginLoading?Center(child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Style.Colors.mainColor),
+                        ),
 
-              ),):Container()
-            ],
-          );
-        },
+                        /// Set component layout
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 25.0, right: 25.0, top: 40.0),
+                                  child: Container(
+                                    height: 53.5,
+                                    child: TextFormField(
+                                      style: new TextStyle(color: Colors.white),
+                                      textAlign: TextAlign.start,
+                                      validator: (text) {
+                                        if (text.toString().isEmpty) {
+                                          return enter_email;
+                                        } else
+                                          return null;
+                                      },
+                                      keyboardType: TextInputType.emailAddress,
+                                      autocorrect: false,
+                                      autofocus: false,
+                                      controller: emailController,
+                                      decoration: InputDecoration(
+                                        labelText: "Enter Email",
+                                        labelStyle:
+                                            TextStyle(color: Colors.white70),
+                                        fillColor: Colors.white,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.white54,
+                                            width: 2.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 25.0, right: 25.0, top: 15.0),
+                                  child: Container(
+                                    height: 53.5,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 0.0, right: 0.0, top: 5.0),
+                                      child: TextFormField(
+                                        style:
+                                            new TextStyle(color: Colors.white),
+                                        textAlign: TextAlign.start,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        autocorrect: false,
+                                        autofocus: false,
+                                        obscureText: true,
+                                        validator: (text) {
+                                          if (text.toString().isEmpty) {
+                                            return enter_password;
+                                          } else
+                                            return null;
+                                        },
+                                        controller: passwordController,
+                                        decoration: InputDecoration(
+                                          labelText: "Enter Password",
+                                          labelStyle:
+                                              TextStyle(color: Colors.white70),
+                                          fillColor: Colors.white,
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                            borderSide: BorderSide(
+                                              color: Colors.redAccent,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                            borderSide: BorderSide(
+                                              color: Colors.white54,
+                                              width: 2.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: Dimens.space20,
+                                ),
+                                tapLogin == 0
+                                    ? Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          splashColor: Colors.white,
+                                          onTap: () {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              print('hhhhhhhhhhh');
+                                              print(emailController.text);
+
+                                              _loginBloc.add(
+                                                  LoginWithEmailAndPhone(
+                                                      emailController
+                                                          .text
+                                                          .toString(),
+                                                      passwordController.text
+                                                          .toString(),
+                                                      ''));
+                                            }
+//
+
+//
+                                          },
+                                          child: ButtonCustom(
+                                            txt: "Login",
+                                            gradient1: Color(0xFFFEE140),
+                                            gradient2: Color(0xFFFA709A),
+                                            border: Colors.transparent,
+                                          ),
+                                        ),
+                                      )
+                                    : AnimationSplashSignup(
+                                        animationController:
+                                            animationController.view,
+                                      ),
+                                Padding(padding: EdgeInsets.only(top: 15.0)),
+                                SizedBox(
+                                  height: Dimens.space40,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      splashColor: Colors.white,
+                                      onTap: () {
+//                                          setState(() {
+//                                            tapLogin = 1;
+//                                          });
+//                                          _Playanimation();
+//                                          return tapLogin;
+
+                                        Navigator.of(context).push(PageRouteBuilder(
+                                            pageBuilder: (_, __, ___) =>
+                                                BlocProvider(
+                                                    create: (context) =>
+                                                        LoginBloc(
+                                                            InitialState()),
+                                                    child:
+                                                        new signinPhoneTemplate1())));
+                                      },
+                                      child: ButtonCustom(
+                                        txt: "Login with Phone",
+                                        gradient1: Colors.white24,
+                                        gradient2: Colors.white,
+                                        border: Colors.transparent,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      splashColor: Colors.white,
+                                      onTap: () {
+                                        _loginBloc.add(LoginWithGoogle());
+
+//
+                                      },
+                                      child: ButtonCustom(
+                                        txt: "Connect with Google",
+                                        gradient1: Colors.red,
+                                        gradient2: Colors.redAccent,
+                                        border: Colors.transparent,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushReplacement(
+                                        PageRouteBuilder(
+                                            pageBuilder: (_, __, ___) =>
+                                                BlocProvider(
+                                                    create: (context) =>
+                                                        LoginBloc(
+                                                            InitialState()),
+                                                    child:
+                                                        new signupTemplate1())));
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Don't have an account?",
+                                        style: TextStyle(
+                                            fontFamily: "Sofia",
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w200,
+                                            fontSize: 15.0),
+                                      ),
+                                      Text(" Signup",
+                                          style: TextStyle(
+                                              fontFamily: "Sofia",
+                                              color: Color(0xFFFA709A),
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: 15.0))
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )),
+
+                  state is LoginLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Style.Colors.mainColor),
+                          ),
+                        )
+                      : Container()
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
-  }
-
-  dynamic callErrorDialog(BuildContext context, String text) {
-    showDialog<dynamic>(
-        context: context,
-        builder: (BuildContext context) {
-          return ErrorDialog(
-            message: text,
-          );
-        });
   }
 
   void _loading() {
@@ -304,7 +396,6 @@ class _chooseLoginState extends State<chooseLogin>
         );
       },
     );
-
   }
 }
 
@@ -396,7 +487,7 @@ class _AnimationSplashLoginState extends State<AnimationSplashLogin> {
     widget.animationController.addListener(() {
       if (widget.animation.isCompleted) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => new signinTemplate1()));
+            builder: (BuildContext context) => new signinPhoneTemplate1()));
         //hello
       }
     });
@@ -445,7 +536,7 @@ class _AnimationSplashSignupState extends State<AnimationSplashSignup> {
     widget.animationController.addListener(() {
       if (widget.animation.isCompleted) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => new signinTemplate1()));
+            builder: (BuildContext context) => new signinPhoneTemplate1()));
       }
     });
     return AnimatedBuilder(

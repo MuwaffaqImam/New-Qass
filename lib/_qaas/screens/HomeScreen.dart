@@ -2,13 +2,17 @@ import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_template/Data_Model/dinner.dart';
 import 'package:food_template/Data_Model/lunch.dart';
+import 'package:food_template/Screen/Template5/HomePage/Drawer/DrawerScreen.dart';
+import 'package:food_template/Screen/Template5/HomePage/HomePageT5.dart';
 import 'package:food_template/_qaas/bloc/login/login_bloc.dart';
 import 'package:food_template/_qaas/bloc/login/login_state.dart';
+import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:food_template/_qaas/screens/BranchesScreen.dart';
 import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/res/Colors.dart';
@@ -244,7 +248,7 @@ class _HomeScreenT1State extends State<HomeScreenT1> {
     );
 
     var _body = Padding(
-      padding: const EdgeInsets.only(top: 120.0),
+      padding: const EdgeInsets.only(top: Dimens.space10),
       child: Column(
         children: <Widget>[
           _search,
@@ -255,6 +259,7 @@ class _HomeScreenT1State extends State<HomeScreenT1> {
     );
 
     return Scaffold(
+
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF975D),
@@ -278,7 +283,7 @@ class _HomeScreenT1State extends State<HomeScreenT1> {
         child: Stack(
           children: <Widget>[
             _background,
-            _appBar,
+//            _appBar,
             _body,
           ],
         ),
@@ -292,92 +297,110 @@ class _HomeScreenT1State extends State<HomeScreenT1> {
       color: Colors.white12,
       child: IconTheme(
         data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            InkWell(
-              onTap: () {},
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                height: 60,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(Icons.menu_rounded),
-                    Text(
-                      LocalManager.translate(word: 'القائمة'),
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    )
-                  ],
+        child: Container(
+          margin: EdgeInsets.only(right: Dimens.space20,left: Dimens.space4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+
+            children: <Widget>[
+              InkWell(
+                onTap: () {
+
+                  Navigator.of(context).push(PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => new MyHomePageT5()));
+
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  margin: EdgeInsets.only(left: Dimens.space2,right: Dimens.space2),
+                  height: 60,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.menu_rounded),
+                      Text(
+                        LocalManager.translate(word: 'القائمة'),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                height: 60,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(Icons.location_on),
-                    Text(
-                      LocalManager.translate(word: 'المواقع'),
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    )
-                  ],
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  margin: EdgeInsets.only(left: Dimens.space4,right: Dimens.space4),
+
+                  height: 60,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.location_on),
+                      Text(
+                        LocalManager.translate(word: 'المواقع'),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                height: 60,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(Icons.description),
-                    Text(
-                      LocalManager.translate(word: 'تذاكر'),
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    )
-                  ],
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  margin: EdgeInsets.only(left: Dimens.space4,right: Dimens.space4),
+
+                  height: 60,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.description),
+                      Text(
+                        LocalManager.translate(word: 'تذاكر'),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.of(context).push(PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => new BlocProvider(
-                          create: (context) => LoginBloc(InitialState()),
-                          child: chooseLogin(),
-                        ),
-                    transitionDuration: Duration(milliseconds: 600),
-                    transitionsBuilder:
-                        (_, Animation<double> animation, __, Widget child) {
-                      return Opacity(
-                        opacity: animation.value,
-                        child: child,
-                      );
-                    }));
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                height: 60,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(Icons.person),
-                    Text(
-                      LocalManager.translate(word: 'الملف الشخصي'),
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    )
-                  ],
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(PageRouteBuilder(
+                      pageBuilder: (_, __, ___) =>
+
+                      new BlocProvider(
+                            create: (context) => LoginBloc(InitialState()),
+                            child: chooseLogin(),
+                          ),
+                      transitionDuration: Duration(milliseconds: 600),
+                      transitionsBuilder:
+                          (_, Animation<double> animation, __, Widget child) {
+                        return Opacity(
+                          opacity: animation.value,
+                          child: child,
+                        );
+                      }));
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  margin: EdgeInsets.only(left: Dimens.space20,right: Dimens.space4),
+
+                  height: 60,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.person),
+                      Text(
+                        LocalManager.translate(word: 'الملف الشخصي'),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

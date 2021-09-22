@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Api {
-  static const String BASE_URL = "qaas-api.azurewebsites.net";
+  static const String BASE_URL = "https://qaas-api.azurewebsites.net";
   static const String GET_TENANTS = '/Tenant';
   static const String GET_BRANCHES = '/Location/';
   ///Location/0b83b136-ca96-4fbc-b0bf-08d977038fd3/services?

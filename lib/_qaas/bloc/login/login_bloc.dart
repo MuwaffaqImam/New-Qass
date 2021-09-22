@@ -21,6 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is LoginWithFacebook) {
       yield LoginLoading();
       try {
+        // await loginWithFacebook();
         yield FacebookLoggedSuccess();
       } catch (_) {
         yield FacebookLoggedFailure();
@@ -32,7 +33,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } catch (error) {
         yield LoggedFailure(error);
       }
-    }
+    } else if (event is LoginWithEmailAndPhone) {
+      yield LoginLoading();
+
+      try {
+
+        yield await loginWithEmail(event);
+      } catch (error) {
+        yield LoggedFailure(error.toString());
+
+      }
+    }else if(event is Reset)yield InitialState();
   }
 
 //   loginWithFacebook() async {
@@ -92,14 +103,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 //   }
 
   Future<LoginState> loginWithGoogle() async {
+    String email,
+        uid = '';
 
-    String email,uid = '';
-
-    try{
+    try {
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
       if (googleUser != null) {
-
         email = googleUser.email;
 
         // get token
@@ -113,7 +123,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           );
 
           final FirebaseUser user =
-              (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+              (await FirebaseAuth.instance.signInWithCredential(credential))
+                  .user;
 
           uid = user.uid;
           /////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +132,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           print('User id : ${user.uid}');
           print('email id : ${googleUser.email}');
 
-          if (user != null && googleUser !=null) {
+          if (user != null && googleUser != null) {
             /// Got Firebase User
 
             /// Show Progress Dialog
@@ -146,47 +157,72 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             /// firebase error
             return LoggedFailure('Firebase User is null');
           }
-
         }
-
       }
-    }catch (Exception) {
+    } catch (Exception) {
       print('not select google account');
 //      return LoggedFailure(Exception.toString());
     }
+  }
 
+  loginWithEmail(LoginWithEmailAndPhone event) async {
+    RegisterRequestModel registerRequest = RegisterRequestModel(
+        username: event.username,
+        email: event.email,
+        password: event.password,
+        locationId: '');
 
+    print('registerRequestModel : ' + registerRequest.email
+        + ' ' + registerRequest.password);
+    RegisterResponseModel result = await _register(registerRequest);
+
+    if (result.status == 'success') {
+      /// go to profile
+      return LoggedSuccess();
+    } else
+
+      /// Error from server
+      return LoggedFailure('Error from server ' + result.message);
   }
 }
 
+
+
+///////////////////////////////////////////
 Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
+
+
   print('${Api.BASE_URL}${Api.REGISTER}');
+  Map<String, dynamic> body = RegisterRequestModel().toMap(model);
+//  Map<String, dynamic> body = {
+//    "username": "string",
+//    "email": "moofiy@a.com",
+//    "password": "123456789",
+//    "locationId": "5555"
+//  };
+  print(body.toString());
 
 
-  http.Response response = await http.post(
+  var response = await http.post(
     '${Api.BASE_URL}${Api.REGISTER}',
-    body: RegisterRequestModel().toMap(model),
-
+    body: body,
   );
 
   print('response....');
+  print(RegisterRequestModel().toMap(model).toString());
   print(response.statusCode);
 
   if (response.statusCode > 200 && response.statusCode < 400) {
     final body = json.decode(response.body);
 
     RegisterResponseModel registerResponseModel =
-        RegisterResponseModel().fromMap(body);
+    RegisterResponseModel().fromMap(body);
 
     return registerResponseModel;
-  } else
-    if (response.statusCode < 200 || response.statusCode > 400 || json == null) {
-
-
-      throw new Exception("Error while fetching data");
-
-
-    }
+  } else if (response.statusCode < 200 ||
+      response.statusCode >= 400 ||
+      json == null) {
+    throw new Exception("Error while fetching data");
+  }
 //    return RegisterResponseModel();
-
 }
