@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_template/Screen/Template1/Login_Screen/SignIn_Screen.dart';
 import 'package:food_template/_qaas/bloc/login/login_bloc.dart';
 import 'package:food_template/_qaas/bloc/login/login_event.dart';
 import 'package:food_template/_qaas/bloc/login/login_state.dart';
+import 'package:food_template/_qaas/models/PrefrenceManager.dart';
+import 'package:food_template/_qaas/models/Token.dart';
+
 import 'package:food_template/_qaas/res/constant.dart';
 import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:food_template/_qaas/res/general.dart';
 import 'package:food_template/_qaas/screens/Login_Screen/SignIn_Screen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:food_template/Screen/Template4/Style/ThemeT4.dart' as Style;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Login_Screen/Signup_Screen.dart';
 import 'common/dialog/error_dialog.dart';
@@ -24,7 +29,9 @@ class chooseLogin extends StatefulWidget {
 
 class _chooseLoginState extends State<chooseLogin>
     with TickerProviderStateMixin {
-  TextEditingController emailController, passwordController;
+  TextEditingController emailController;
+
+  TextEditingController passwordController;
   final _formKey = GlobalKey<FormState>();
 
   /// Declare Animation
@@ -40,8 +47,8 @@ class _chooseLoginState extends State<chooseLogin>
   void initState() {
     _loginBloc = BlocProvider.of<LoginBloc>(context);
 
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
+    emailController = TextEditingController(text: 'email');
+    passwordController = TextEditingController(text: 'password');
     pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false, showLogs: true);
 
@@ -90,9 +97,16 @@ class _chooseLoginState extends State<chooseLogin>
           body: BlocBuilder<LoginBloc, LoginState>(
             bloc: _loginBloc,
             builder: (_, state) {
-              if (state is LoggedSuccess) {
+              if (state is LoginSuccess) {
                 //go  to profile
-              } else if (state is LoggedFailure) {
+                Token token = state.token;
+                PreferenceManager.saveTokenToPref(token);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  SystemNavigator.pop();
+                }
+              } else if (state is LoginFailure) {
                 Future.delayed(Duration(milliseconds: 300), () {
                   General.callErrorDialog(context, state.errorMessage);
                   _loginBloc.add(Reset());
@@ -101,9 +115,6 @@ class _chooseLoginState extends State<chooseLogin>
 
               return Stack(
                 children: <Widget>[
-                  ///
-                  /// Set background video
-                  ///
                   Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
@@ -362,14 +373,8 @@ class _chooseLoginState extends State<chooseLogin>
                           ),
                         ),
                       )),
-
                   state is LoginLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Style.Colors.mainColor),
-                          ),
-                        )
+                      ? Center(child: CircularProgressIndicator())
                       : Container()
                 ],
               );

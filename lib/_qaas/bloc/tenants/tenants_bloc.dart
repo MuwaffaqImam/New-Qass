@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:food_template/_qaas/models/Branch.dart';
 import 'package:food_template/_qaas/models/Service.dart';
 import 'package:food_template/_qaas/models/Tenants.dart';
+import 'package:food_template/_qaas/models/Tickets.dart';
 import 'package:food_template/_qaas/network/Api.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
@@ -22,25 +23,67 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
     if (event is TenantList) yield* _mapTenantsListToState();
     if (event is TenantBranches) yield* _mapTenantsBranchesToState(event);
     if (event is TenantServices) yield* _mapServiceToState(event);
+    if (event is SendTickets) yield* _mapSendTicketsToState(event);
+  }
+
+  Stream<TenantsState> _mapSendTicketsToState(SendTickets event) async* {
+    yield Loading();
+    try {
+      final Ticket ticket = await fetchTickets(serviceId: event.serviceId,locationId: event.locationId);
+      yield TicketsSuccess(ticket);
+    } catch (_) {
+      print('$_');
+      yield Failure();
+    }
   }
 
   Stream<TenantsState> _mapServiceToState(TenantServices event) async* {
     yield Loading();
-   // try {
-      final List<ServiceProvided> services = await fetchServices(event.branchId);
+    try {
+      final List<ServiceProvided> services = await fetchServices(
+          event.branchId);
       yield ServicesSuccess(services);
+    } catch (_) {
+      yield Failure();
+    }
+  }
+
+  Stream<TenantsState> _mapTenantsBranchesToState(TenantBranches event) async* {
+    yield Loading();
+    // try {
+    final List<Branch> branches = await fetchTenantBranches(event.tenantId);
+    yield TenantsBranchesSuccess(branches);
     // } catch (_) {
     //   yield Failure();
     // }
   }
-  Stream<TenantsState> _mapTenantsBranchesToState(TenantBranches event) async* {
-    yield Loading();
-    // try {
-      final List<Branch> branches = await fetchTenantBranches(event.tenantId);
-      yield TenantsBranchesSuccess(branches);
-    // } catch (_) {
-    //   yield Failure();
-    // }
+
+  Future<Ticket> fetchTickets({String serviceId, String locationId,int type=0}) async {
+    print('PostTicket ....');
+    final response = await http.post(
+        Uri.https(
+          Api.BASE_URL,
+          '${Api.POST_TICKETS}',
+        ),
+        headers: {
+          'accept': 'text/plain',
+          'Content-Type': 'text/json',
+          'authorization': await Api.buildingBearerAuthorization()
+        },
+        body: {
+          "serviceId": "$serviceId",
+          "location": "$locationId",
+          "phone": "string",
+          "ticketType": 0
+        });
+    print("Requesting ...");
+    print(response.request.url);
+    print('response.body');
+    print(response.body);
+    if (response.statusCode == 200) {
+      return Ticket.fromJson(json.decode(response.body));
+    }
+    throw Exception('error');
   }
 
   Future<List<ServiceProvided>> fetchServices(String tenantId) async {
@@ -69,8 +112,8 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
     print('fetching tenants Branches....');
     final response = await http.get(
       Uri.https(
-          Api.BASE_URL,
-          '${Api.GET_BRANCHES}$tenantId${Api.GET_TENANTS}',
+        Api.BASE_URL,
+        '${Api.GET_BRANCHES}$tenantId${Api.GET_TENANTS}',
       ),
     );
     print("Requesting ...");
@@ -117,4 +160,3 @@ Future<List<Tenant>> fetchTenant() async {
   }
   throw Exception('error');
 }
-

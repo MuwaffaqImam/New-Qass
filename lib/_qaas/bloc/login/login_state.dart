@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:food_template/_qaas/models/Token.dart';
 
 class LoginState extends Equatable {
   @override
@@ -7,16 +8,19 @@ class LoginState extends Equatable {
 }
 
 class InitialState extends LoginState {}
-class LoginLoading extends LoginState {}
-///////////////////////////////
-class FacebookLoggedSuccess extends LoginState {}
-class FacebookLoggedFailure extends LoginState {}
-///////////////////////////////
-class LoggedSuccess extends LoginState {}
-
-class LoggedFailure extends LoginState {
- final String errorMessage;
-
-  LoggedFailure(this.errorMessage);
-
+class FacebookLoginSuccess extends LoginState {}
+class FacebookLoginFailure extends LoginState {}
+class LoginSuccess extends LoginState {
+  final Token token;
+  LoginSuccess(this.token);
 }
+class LoginFailure extends LoginState {
+  final String errorMessage;
+  LoginFailure(this.errorMessage);
+}
+
+class LoginLoading extends LoginState {}
+
+
+
+

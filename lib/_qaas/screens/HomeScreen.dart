@@ -23,14 +23,14 @@ import '../bloc/tenants/tenants_bloc.dart';
 import '../models/Tenants.dart';
 import 'Choose_Login.dart';
 
-class HomeScreenT1 extends StatefulWidget {
-  HomeScreenT1({Key key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key}) : super(key: key);
 
   @override
-  _HomeScreenT1State createState() => _HomeScreenT1State();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenT1State extends State<HomeScreenT1> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   List<String> _image = [
     "assets/Template1/banner/1.jpg",

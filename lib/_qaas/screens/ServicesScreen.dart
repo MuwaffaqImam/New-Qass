@@ -8,6 +8,7 @@ import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/models/Branch.dart';
 import 'package:food_template/_qaas/models/Service.dart';
 import 'package:food_template/_qaas/res/Fonts.dart';
+import 'package:food_template/_qaas/screens/tickets/TicketsScreen.dart';
 
 class ServiceScreen extends StatelessWidget {
   final String title;
@@ -138,7 +139,21 @@ class ServiceCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (_, __, ___) => new BlocProvider(
+                create: (_) => TenantsBloc()..add(SendTickets(locationId: service.locationId,serviceId: service.serviceId)),
+                child: new TicketsScreen(),
+              ),
+              transitionDuration: Duration(milliseconds: 600),
+              transitionsBuilder:
+                  (_, Animation<double> animation, __, Widget child) {
+                return Opacity(
+                  opacity: animation.value,
+                  child: child,
+                );
+              }));
+        },
         child: Container(
           height: 140.0,
           decoration: BoxDecoration(

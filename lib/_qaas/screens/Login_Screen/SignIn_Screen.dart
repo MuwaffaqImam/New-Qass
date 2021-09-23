@@ -40,9 +40,9 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
         bloc: _loginBloc,
         builder: (_, state) {
 
-          if (state is LoggedSuccess) {
+          if (state is LoginSuccess) {
             //go  to profile
-          } else if (state is LoggedFailure) {
+          } else if (state is LoginFailure) {
             Future.delayed(Duration(milliseconds: 300), () {
               General.callErrorDialog(context, state.errorMessage);
               _loginBloc.add(Reset());

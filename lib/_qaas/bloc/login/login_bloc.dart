@@ -4,9 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_template/_qaas/bloc/tenants/tenants_bloc.dart';
 import 'package:food_template/_qaas/models/RegisterModel.dart';
+import 'package:food_template/_qaas/models/Token.dart';
 
 import 'package:food_template/_qaas/network/Api.dart';
+import 'package:food_template/_qaas/res/constant.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'login_event.dart';
@@ -18,32 +21,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
+    if (event is LoginWithEmailAndPhone) yield* _mapLoginToState();
+    else
     if (event is LoginWithFacebook) {
       yield LoginLoading();
       try {
         // await loginWithFacebook();
-        yield FacebookLoggedSuccess();
+        yield FacebookLoginSuccess();
       } catch (_) {
-        yield FacebookLoggedFailure();
+        yield LoginFailure("errorMessage");
       }
     } else if (event is LoginWithGoogle) {
       yield LoginLoading();
       try {
         yield await loginWithGoogle();
       } catch (error) {
-        yield LoggedFailure(error);
+        yield LoginFailure(error);
       }
     } else if (event is LoginWithEmailAndPhone) {
       yield LoginLoading();
-
-      try {
-
-        yield await loginWithEmail(event);
-      } catch (error) {
-        yield LoggedFailure(error.toString());
-
-      }
-    }else if(event is Reset)yield InitialState();
+    } else if (event is Reset) yield InitialState();
   }
 
 //   loginWithFacebook() async {
@@ -103,8 +100,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 //   }
 
   Future<LoginState> loginWithGoogle() async {
-    String email,
-        uid = '';
+    String email, uid = '';
 
     try {
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
@@ -114,7 +110,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         // get token
         final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+            await googleUser.authentication;
 
         if (googleAuth.idToken != null && googleAuth.accessToken != null) {
           final AuthCredential credential = GoogleAuthProvider.getCredential(
@@ -139,7 +135,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
             /// Submit to backend
 
-            return LoggedFailure('Error from server ');
+            return LoginFailure('Error from server ');
 //            RegisterRequestModel registerRequest = RegisterRequestModel(
 //                username: uid, email: email, password: '', locationId: '');
 //
@@ -152,46 +148,58 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 //            } else
 //
 //              /// Error from server
-//              return LoggedFailure('Error from server ' + result.message);
+//              return LoggedLoginFailure('Error from server ' + result.message);
           } else {
             /// firebase error
-            return LoggedFailure('Firebase User is null');
+            return LoginFailure('Firebase User is null');
           }
         }
       }
     } catch (Exception) {
       print('not select google account');
-//      return LoggedFailure(Exception.toString());
+//      return LoggedLoginFailure(Exception.toString());
     }
   }
 
-  loginWithEmail(LoginWithEmailAndPhone event) async {
-    RegisterRequestModel registerRequest = RegisterRequestModel(
-        username: event.username,
-        email: event.email,
-        password: event.password,
-        locationId: '');
-
-    print('registerRequestModel : ' + registerRequest.email
-        + ' ' + registerRequest.password);
-    RegisterResponseModel result = await _register(registerRequest);
-
-    if (result.status == 'success') {
-      /// go to profile
-      return LoggedSuccess();
-    } else
-
-      /// Error from server
-      return LoggedFailure('Error from server ' + result.message);
+  Stream<LoginState> _mapLoginToState() async* {
+    yield LoginLoading();
+    try {
+      final Token token = await login();
+      yield LoginSuccess(token);
+    } catch (_) {
+      yield LoginFailure("error $_");
+    }
   }
 }
 
+Future<Token> login() async {
+  print('login ....');
+  final response = await http.post(
+      Uri.https(
+        Api.BASE_URL_LOGIN,
+        '${Api.POST_LOGIN}',
+      ),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        'authorization': Api.buildingBasicAuthorization()
+      },
+      body: {
+        "username": "keylife",
+        "grant_type": "password",
+        "password": "Aa_123456",
+        "scope": ""
+      });
+  print("Requesting ...");
+  print(response.request.url);
+  print('response.body');
+  print(response.body);
+  if (response.statusCode == 200) {
+    return Token.fromJson(json.decode(response.body));
+  }
+  throw Exception('error');
+}
 
-
-///////////////////////////////////////////
 Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
-
-
   print('${Api.BASE_URL}${Api.REGISTER}');
   Map<String, dynamic> body = RegisterRequestModel().toMap(model);
 //  Map<String, dynamic> body = {
@@ -202,11 +210,13 @@ Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
 //  };
   print(body.toString());
 
-
   var response = await http.post(
-    '${Api.BASE_URL}${Api.REGISTER}',
-    body: body,
-  );
+      Uri.https(
+        Api.BASE_URL,
+        '${Api.REGISTER}',
+      ),
+      headers: Api.buildingBasicAuthorization(),
+      body: body);
 
   print('response....');
   print(RegisterRequestModel().toMap(model).toString());
@@ -216,13 +226,8 @@ Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
     final body = json.decode(response.body);
 
     RegisterResponseModel registerResponseModel =
-    RegisterResponseModel().fromMap(body);
+        RegisterResponseModel().fromMap(body);
 
     return registerResponseModel;
-  } else if (response.statusCode < 200 ||
-      response.statusCode >= 400 ||
-      json == null) {
-    throw new Exception("Error while fetching data");
   }
-//    return RegisterResponseModel();
 }

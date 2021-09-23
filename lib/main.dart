@@ -49,7 +49,7 @@ class MyStartingHomePage extends StatelessWidget {
       ),),
       body: BlocProvider(
         create: (_) => TenantsBloc()..add(TenantList()),
-        child: HomeScreenT1(),
+        child: HomeScreen(),
       ),
     );
   }
