@@ -12,7 +12,6 @@ import 'Confirm_OTP_Screen.dart';
 import 'Signup_Screen.dart';
 import 'package:crypto/crypto.dart';
 
-
 class signinPhoneTemplate1 extends StatefulWidget {
   signinPhoneTemplate1({Key key}) : super(key: key);
 
@@ -39,7 +38,6 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
     return BlocBuilder(
         bloc: _loginBloc,
         builder: (_, state) {
-
           if (state is LoginSuccess) {
             //go  to profile
           } else if (state is LoginFailure) {
@@ -127,8 +125,7 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
                                           } else
                                             return null;
                                         },
-                                        keyboardType:
-                                            TextInputType.phone,
+                                        keyboardType: TextInputType.phone,
                                         autocorrect: false,
                                         autofocus: false,
                                         decoration: InputDecoration(
@@ -210,20 +207,17 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
                               child: InkWell(
                                 onTap: () {
 
-          if (_formKey.currentState
-              .validate()) {
 
-            var bytes1 = utf8.encode(_phoneCon.text.toString());         // data being hashed
-            Digest digest1 = sha256.convert(bytes1);         // Hashing Process
-            print("Digest as hex string: $digest1");
-            print(_phoneCon.text.toString());
-            _loginBloc.add(LoginWithEmailAndPhone(
-                _phoneCon.text.toString(),
-                digest1.toString(),''));
+                                  if (_formKey.currentState.validate()) {
 
-          }
-
-
+                                    print(_phoneCon.text.toString());
+                                    _loginBloc.add(LoginWithEmailAndPhone(
+                                        _phoneCon.text.toString(),
+                                        sha256
+                                            .convert(utf8.encode(_phoneCon.text
+                                            .toString())).toString(),
+                                        ''));
+                                  }
 
 //
 
@@ -258,7 +252,6 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
                             SizedBox(
                               height: 18.0,
                             ),
-
                           ],
                         ),
                       ),
@@ -271,13 +264,4 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
         });
   }
 
-   dynamic callErrorDialog(BuildContext context, String text) {
-    showDialog<dynamic>(
-        context: context,
-        builder: (BuildContext context) {
-          return ErrorDialog(
-            message: text,
-          );
-        });
-  }
 }
