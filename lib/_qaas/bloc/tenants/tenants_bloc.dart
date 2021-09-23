@@ -19,7 +19,9 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   TenantsBloc() : super(Loading());
 
   @override
-  Stream<TenantsState> mapEventToState(TenantsEvent event,) async* {
+  Stream<TenantsState> mapEventToState(
+    TenantsEvent event,
+  ) async* {
     if (event is TenantList) yield* _mapTenantsListToState();
     if (event is TenantBranches) yield* _mapTenantsBranchesToState(event);
     if (event is TenantServices) yield* _mapServiceToState(event);
@@ -29,7 +31,8 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   Stream<TenantsState> _mapSendTicketsToState(SendTickets event) async* {
     yield Loading();
     try {
-      final Ticket ticket = await fetchTickets(serviceId: event.serviceId,locationId: event.locationId);
+      final Ticket ticket = await fetchTickets(
+          serviceId: event.serviceId, locationId: event.locationId);
       yield TicketsSuccess(ticket);
     } catch (_) {
       print('$_');
@@ -40,8 +43,8 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   Stream<TenantsState> _mapServiceToState(TenantServices event) async* {
     yield Loading();
     try {
-      final List<ServiceProvided> services = await fetchServices(
-          event.branchId);
+      final List<ServiceProvided> services =
+          await fetchServices(event.branchId);
       yield ServicesSuccess(services);
     } catch (_) {
       yield Failure();
@@ -58,24 +61,20 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
     // }
   }
 
-  Future<Ticket> fetchTickets({String serviceId, String locationId,int type=0}) async {
+  Future<Ticket> fetchTickets(
+      {String serviceId, String locationId, int type = 0}) async {
     print('PostTicket ....');
-    final response = await http.post(
-        Uri.https(
-          Api.BASE_URL,
-          '${Api.POST_TICKETS}',
-        ),
-        headers: {
-          'accept': 'text/plain',
-          'Content-Type': 'text/json',
-          'authorization': await Api.buildingBearerAuthorization()
-        },
-        body: {
-          "serviceId": "$serviceId",
-          "location": "$locationId",
-          "phone": "string",
-          "ticketType": 0
-        });
+    final response =
+        await http.post('${Api.BASE_URL}/${Api.POST_TICKETS}', headers: {
+      'accept': 'text/plain',
+      'Content-Type': 'text/json',
+      'authorization': await Api.buildingBearerAuthorization()
+    }, body: {
+      "serviceId": "$serviceId",
+      "location": "$locationId",
+      "phone": "string",
+      "ticketType": 0
+    });
     print("Requesting ...");
     print(response.request.url);
     print('response.body');
@@ -89,10 +88,7 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   Future<List<ServiceProvided>> fetchServices(String tenantId) async {
     print('fetching fetchServices ....');
     final response = await http.get(
-      Uri.https(
-        Api.BASE_URL,
-        '${Api.GET_BRANCHES}$tenantId${Api.GET_SERVICES}',
-      ),
+        '${Api.BASE_URL}${Api.GET_BRANCHES}$tenantId${Api.GET_SERVICES}',
     );
     print("Requesting ...");
     print(response.request.url);
@@ -111,10 +107,7 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   Future<List<Branch>> fetchTenantBranches(String tenantId) async {
     print('fetching tenants Branches....');
     final response = await http.get(
-      Uri.https(
-        Api.BASE_URL,
-        '${Api.GET_BRANCHES}$tenantId${Api.GET_TENANTS}',
-      ),
+      '${Api.BASE_URL}${Api.GET_BRANCHES}$tenantId${Api.GET_TENANTS}',
     );
     print("Requesting ...");
     print(response.request.url);
@@ -130,7 +123,6 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   }
 }
 
-
 Stream<TenantsState> _mapTenantsListToState() async* {
   yield Loading();
   try {
@@ -143,10 +135,7 @@ Stream<TenantsState> _mapTenantsListToState() async* {
 
 Future<List<Tenant>> fetchTenant() async {
   print('fetching tenants ....');
-  final response = await http.get(
-      '${Api.BASE_URL}${Api.GET_TENANTS}'
-
-  );
+  final response = await http.get('${Api.BASE_URL}${Api.GET_TENANTS}');
   print("Requesting ...");
   print(response.request.url);
   if (response.statusCode == 200) {

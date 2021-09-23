@@ -93,14 +93,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.white,
                       fontWeight: FontWeight.w700),
                 ),
-                 Text(
-                   "مشاهدة المزيد",
-                   style: TextStyle(
-                       fontFamily: Fonts.tajwalFamily,
-                       color: Colors.white54,
-                       fontSize: 12.0,
-                       fontWeight: FontWeight.w300),
-                 ),
+                 // Text(
+                 //   "مشاهدة المزيد",
+                 //   style: TextStyle(
+                 //       fontFamily: Fonts.tajwalFamily,
+                 //       color: Colors.white54,
+                 //       fontSize: 12.0,
+                 //       fontWeight: FontWeight.w300),
+                 // ),
               ]),
         ),
         Padding(
@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.only(top: Dimens.space10),
       child: Column(
         children: <Widget>[
-          _search,
+          // _search,
           _sliderImage,
           blocCategory(),
         ],
@@ -296,7 +296,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   margin: EdgeInsets.only(left: Dimens.space4,right: Dimens.space4),
-
                   height: 60,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

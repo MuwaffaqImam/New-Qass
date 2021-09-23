@@ -12,8 +12,13 @@ class LoginWithGoogle extends LoginEvent {}
 
 class LoginWithEmailAndPhone extends LoginEvent {
   final String email, password, username;
-
   LoginWithEmailAndPhone(this.email, this.password, this.username);
 }
 
 class Reset extends LoginEvent {}
+
+
+class RegisterUser extends LoginEvent {
+  final String email, password;
+  RegisterUser(this.email, this.password);
+}

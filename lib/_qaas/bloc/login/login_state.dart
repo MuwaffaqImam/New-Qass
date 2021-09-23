@@ -21,6 +21,10 @@ class LoginFailure extends LoginState {
 
 class LoginLoading extends LoginState {}
 
+class RegisterSuccess extends LoginState {
+
+}
+
 
 
 

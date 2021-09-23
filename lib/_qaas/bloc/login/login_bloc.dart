@@ -21,9 +21,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is LoginWithEmailAndPhone) yield* _mapLoginToState();
-    else
-    if (event is LoginWithFacebook) {
+    if (event is LoginWithEmailAndPhone)
+      yield* _mapLoginToState(event);
+    // I added this BLOC
+    else if (event is RegisterUser)
+      yield* _mapRegisterToState(event);
+    else if (event is LoginWithFacebook) {
       yield LoginLoading();
       try {
         // await loginWithFacebook();
@@ -34,22 +37,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginWithGoogle) {
       yield LoginLoading();
       try {
-        yield await loginWithGoogle();
+        // yield await loginWithGoogle();
       } catch (error) {
         yield LoginFailure(error);
       }
     } else if (event is LoginWithEmailAndPhone) {
       yield LoginLoading();
     } else if (event is Reset) yield InitialState();
-
-//      try {
-
-        yield await loginWithEmail(event);
-//      } catch (error) {
-//        yield LoggedFailure(error.toString());
-//
-//      }
-    }else if(event is Reset)yield InitialState();
   }
 
 //   loginWithFacebook() async {
@@ -108,104 +102,92 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 //     }
 //   }
 
-  Future<LoginState> loginWithGoogle() async {
-    String email, uid = '';
-
-    try {
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser != null) {
-        email = googleUser.email;
-
-        // get token
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-
-        if (googleAuth.idToken != null && googleAuth.accessToken != null) {
-          final AuthCredential credential = GoogleAuthProvider.getCredential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
-          );
-
-          final FirebaseUser user =
-              (await FirebaseAuth.instance.signInWithCredential(credential))
-                  .user;
-
-          uid = user.uid;
-          /////////////////////////////////////////////////////////////////////////////////
-
-          print('User id : ${user.uid}');
-          print('email id : ${googleUser.email}');
-
-          if (user != null && googleUser != null) {
-            /// Got Firebase User
-
-            /// Show Progress Dialog
-
-            /// Submit to backend
-
-            return LoginFailure('Error from server ');
-//            RegisterRequestModel registerRequest = RegisterRequestModel(
-//                username: uid, email: email, password: '', locationId: '');
+//   Future<LoginState> loginWithGoogle() async {
+//     String email, uid = '';
 //
-//            RegisterResponseModel result = await _register(registerRequest);
+//     try {
+//       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 //
+//       if (googleUser != null) {
+//         email = googleUser.email;
 //
-//            if (result.status == 'success') {
-//              /// go to profile
-//              return LoggedSuccess();
-//            } else
+//         // get token
+//         final GoogleSignInAuthentication googleAuth =
+//             await googleUser.authentication;
 //
-//              /// Error from server
-//              return LoggedLoginFailure('Error from server ' + result.message);
-          } else {
-            /// firebase error
-            return LoginFailure('Firebase User is null');
-          }
-        }
-      }
-    } catch (Exception) {
-      print('not select google account');
-//      return LoggedLoginFailure(Exception.toString());
-    }
-  }
+//         if (googleAuth.idToken != null && googleAuth.accessToken != null) {
+//           final AuthCredential credential = GoogleAuthProvider.getCredential(
+//             accessToken: googleAuth.accessToken,
+//             idToken: googleAuth.idToken,
+//           );
+//
+//           final FirebaseUser user =
+//               (await FirebaseAuth.instance.signInWithCredential(credential))
+//                   .user;
+//
+//           uid = user.uid;
+//           /////////////////////////////////////////////////////////////////////////////////
+//
+//           print('User id : ${user.uid}');
+//           print('email id : ${googleUser.email}');
+//
+//           if (user != null && googleUser != null) {
+//             /// Got Firebase User
+//
+//             /// Show Progress Dialog
+//
+//             /// Submit to backend
+//
+//             return LoginFailure('Error from server ');
+// //            RegisterRequestModel registerRequest = RegisterRequestModel(
+// //                username: uid, email: email, password: '', locationId: '');
+// //
+// //            RegisterResponseModel result = await _register(registerRequest);
+// //
+// //
+// //            if (result.status == 'success') {
+// //              /// go to profile
+// //              return LoggedSuccess();
+// //            } else
+// //
+// //              /// Error from server
+// //              return LoggedLoginLoginFailure('Error from server ' + result.message);
+//           } else {
+//             /// firebase error
+//             return LoginFailure('Firebase User is null');
+//           }
+//         }
+//       }
+//     } catch (Exception) {
+//       print('not select google account');
+// //      return LoggedLoginLoginFailure(Exception.toString());
+//     }
+//   }
 
-  loginWithEmail(LoginWithEmailAndPhone event) async {
-    RegisterRequestModel registerRequest = RegisterRequestModel(
-        username: "keylife",
-        grant_type: "password",
-        password: "Aa_123456",
-        scope: '');
-  Stream<LoginState> _mapLoginToState() async* {
+  Stream<LoginState> _mapRegisterToState(RegisterUser event) async* {
     yield LoginLoading();
     try {
-      final Token token = await login();
-      yield LoginSuccess(token);
+      final bool success =
+          await register(email: event.email, password: event.password);
+      yield RegisterSuccess();
     } catch (_) {
       yield LoginFailure("error $_");
     }
   }
 }
 
-//    RegisterRequestModel registerRequest = RegisterRequestModel(
-//        username: null,
-//        grant_type: null,
-//        password: null,
-//        scope: '');
+Stream<LoginState> _mapLoginToState(LoginWithEmailAndPhone event) async* {
+  yield LoginLoading();
+  try {
+    final Token token =
+        await login(password: event.password, username: event.username);
+    yield LoginSuccess(token);
+  } catch (_) {
+    yield LoginFailure("error $_");
+  }
+}
 
-    print('registerRequestModel : ' + registerRequest.grant_type
-        + ' ' + registerRequest.password);
-    RegisterResponseModel result = await _register(registerRequest);
-
-    if (result.status == 'success') {
-      /// go to profile
-      print('success... ${result.message}');
-      return LoggedSuccess();
-    } else
-
-      /// Error from server
-      return LoggedFailure('Error from server ' + result.message);
-Future<Token> login() async {
+Future<Token> login({String username, String password}) async {
   print('login ....');
   final response = await http.post(
       Uri.https(
@@ -232,20 +214,45 @@ Future<Token> login() async {
   throw Exception('error');
 }
 
+Future<bool> register({String password, String email}) async {
+  print('Register ....');
+  final response = await http.post(
+      Uri.https(
+        Api.BASE_URL_LOGIN,
+        '${Api.REGISTER}',
+      ),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        'authorization': Api.buildingBasicAuthorization()
+      },
+      body: {
+        "email": "$email",
+        "password": "$password",
+        "locationId": "888348834sjdsdjjssjssd334",
+        "Role": "user"
+      });
+  print("Requesting ...");
+  print(response.request.url);
+  print('response.body');
+  print(response.body);
+  if (response.statusCode == 200) {
+    return true;
+  }
+  throw Exception('error');
+}
+
 Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
-
-
-
   print('${Api.BASE_URL}${Api.REGISTER}');
   Map<String, dynamic> body = RegisterRequestModel().toMap(model);
-
+//  Map<String, dynamic> body = {
+//    "username": "string",
+//    "email": "moofiy@a.com",
+//    "password": "123456789",
+//    "locationId": "5555"
+//  };
   print(body.toString());
 
   var response = await http.post(
-    '${Api.BASE_URL_LOGIN}${Api.LOGIN}',
-    body: body,
-    headers: {'authorization': Api.buildingBasicAuthintication()}
-  );
       Uri.https(
         Api.BASE_URL,
         '${Api.REGISTER}',
@@ -253,7 +260,7 @@ Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
       headers: Api.buildingBasicAuthorization(),
       body: body);
 
-  print('response....${response.body}');
+  print('response....');
   print(RegisterRequestModel().toMap(model).toString());
   print(response.statusCode);
 

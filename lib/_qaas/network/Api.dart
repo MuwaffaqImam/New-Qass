@@ -1,15 +1,9 @@
 import 'dart:convert';
-
-import 'dart:convert';
-
 import 'package:food_template/_qaas/models/PrefrenceManager.dart';
 
 class Api {
   static const String BASE_URL = "https://qaas-api.azurewebsites.net";
   static const String BASE_URL_LOGIN = "https://qaas-is.azurewebsites.net";
-
-  static const String BASE_URL = "qaas-api.azurewebsites.net";
-  static const String BASE_URL_LOGIN = "qaas-is.azurewebsites.net";
   static const String GET_TENANTS = '/Tenant';
   static const String GET_BRANCHES = '/Location/';
   static const String POST_LOGIN = 'connect/token';
