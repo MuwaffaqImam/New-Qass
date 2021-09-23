@@ -53,6 +53,8 @@ dependencies:
   qr_flutter:
   qr_code_scanner: ^0.4.0
   vibration: ^1.7.3
+  auto_size_text: ^2.1.0
+
 
 
 dev_dependencies:

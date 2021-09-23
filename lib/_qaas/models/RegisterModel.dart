@@ -48,20 +48,20 @@ class RegisterResponseModel extends PsObject<RegisterResponseModel> {
 }
 
 class RegisterRequestModel extends PsObject<RegisterRequestModel> {
-  String username, email, password, locationId;
+  String username, grant_type, password, scope;
 
   RegisterRequestModel(
-      {this.username, this.email, this.password, this.locationId});
+      {this.username, this.grant_type, this.password, this.scope});
 
   @override
   RegisterRequestModel fromMap(dynamicData) {
     // TODO: implement fromMap
     if (dynamicData != null) {
       return RegisterRequestModel(
-          username: dynamicData['username'],
-          email: dynamicData['email'],
-          password: dynamicData['password'],
-          locationId: dynamicData['locationId']);
+          username: dynamicData['username']?? "keylife",
+          grant_type: dynamicData['grant_type'] ??"password",
+          password: dynamicData['password']??"Aa_123456",
+          scope: dynamicData['scope']?? "");
     } else {
       return null;
     }
@@ -85,9 +85,9 @@ class RegisterRequestModel extends PsObject<RegisterRequestModel> {
     if (object != null) {
       final Map<String, dynamic> data = <String, dynamic>{};
       data['username'] = object.username;
-      data['email'] = object.email;
+      data['grant_type'] = object.grant_type;
       data['password'] = object.password;
-      data['locationId'] = object.locationId;
+      data['scope'] = "";
     } else {
       return null;
     }

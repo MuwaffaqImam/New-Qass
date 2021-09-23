@@ -65,10 +65,8 @@ Stream<TenantsState> _mapTenantsListToState() async* {
 Future<List<Tenant>> fetchTenant() async {
   print('fetching tenants ....');
   final response = await http.get(
-    Uri.https(
-      Api.BASE_URL,
-      Api.GET_TENANTS,
-    ),
+      '${Api.BASE_URL}${Api.GET_TENANTS}'
+
   );
   if (response.statusCode == 200) {
     final body = json.decode(response.body) as List;
