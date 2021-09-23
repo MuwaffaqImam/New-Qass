@@ -41,6 +41,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginWithEmailAndPhone) {
       yield LoginLoading();
     } else if (event is Reset) yield InitialState();
+
+//      try {
+
+        yield await loginWithEmail(event);
+//      } catch (error) {
+//        yield LoggedFailure(error.toString());
+//
+//      }
+    }else if(event is Reset)yield InitialState();
   }
 
 //   loginWithFacebook() async {
@@ -161,6 +170,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+  loginWithEmail(LoginWithEmailAndPhone event) async {
+    RegisterRequestModel registerRequest = RegisterRequestModel(
+        username: "keylife",
+        grant_type: "password",
+        password: "Aa_123456",
+        scope: '');
   Stream<LoginState> _mapLoginToState() async* {
     yield LoginLoading();
     try {
@@ -172,6 +187,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 }
 
+//    RegisterRequestModel registerRequest = RegisterRequestModel(
+//        username: null,
+//        grant_type: null,
+//        password: null,
+//        scope: '');
+
+    print('registerRequestModel : ' + registerRequest.grant_type
+        + ' ' + registerRequest.password);
+    RegisterResponseModel result = await _register(registerRequest);
+
+    if (result.status == 'success') {
+      /// go to profile
+      print('success... ${result.message}');
+      return LoggedSuccess();
+    } else
+
+      /// Error from server
+      return LoggedFailure('Error from server ' + result.message);
 Future<Token> login() async {
   print('login ....');
   final response = await http.post(
@@ -200,17 +233,19 @@ Future<Token> login() async {
 }
 
 Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
+
+
+
   print('${Api.BASE_URL}${Api.REGISTER}');
   Map<String, dynamic> body = RegisterRequestModel().toMap(model);
-//  Map<String, dynamic> body = {
-//    "username": "string",
-//    "email": "moofiy@a.com",
-//    "password": "123456789",
-//    "locationId": "5555"
-//  };
+
   print(body.toString());
 
   var response = await http.post(
+    '${Api.BASE_URL_LOGIN}${Api.LOGIN}',
+    body: body,
+    headers: {'authorization': Api.buildingBasicAuthintication()}
+  );
       Uri.https(
         Api.BASE_URL,
         '${Api.REGISTER}',
@@ -218,7 +253,7 @@ Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
       headers: Api.buildingBasicAuthorization(),
       body: body);
 
-  print('response....');
+  print('response....${response.body}');
   print(RegisterRequestModel().toMap(model).toString());
   print(response.statusCode);
 

@@ -1,5 +1,7 @@
 import 'dart:collection';
+import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,40 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ],
   );
 
-  var _appBar = Align(
-    alignment: Alignment.centerRight,
-    child: Padding(
-      padding: const EdgeInsets.only(top: 37.0, left: 20.0, right: 15.0),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              LocalManager.translate(word: "طابور"),
-              style: TextStyle(
-                  fontFamily: Fonts.elMessriFamily,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 30.0,
-                  letterSpacing: 1.5,
-                  color: Colors.white),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-              child: Container(
-                height: 50.0,
-                width: 50.0,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          "https://images2.imgbox.com/7d/50/GDU0vQnM_o.png",
-                          errorListener: () => new Icon(Icons.error),
-                        ),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.all(Radius.circular(150.0))),
-              ),
-            ),
-          ]),
-    ),
-  );
+
 
   Widget buildCategoriesView(String cat, List<Tenant> tenants) {
     return Column(
@@ -111,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
+          padding: const EdgeInsets.only(left: Dimens.space20, right: Dimens.space20, top:Dimens.space10),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -119,36 +88,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   // tenants.first?.category?.name,
                   cat??"لا يوجد اسم",
                   style: TextStyle(
-                      fontFamily: "Sofia",
-                      fontSize: 18.5,
-                      color: Colors.white.withOpacity(0.9),
-                      fontWeight: FontWeight.w600),
+                  fontFamily: Fonts.tajwalFamily,
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700),
                 ),
-                // Text(
-                //   "See all",
-                //   style: TextStyle(
-                //       fontFamily: "Sofia",
-                //       color: Colors.white54,
-                //       fontSize: 15.0,
-                //       fontWeight: FontWeight.w300),
-                // ),
+                 Text(
+                   "مشاهدة المزيد",
+                   style: TextStyle(
+                       fontFamily: Fonts.tajwalFamily,
+                       color: Colors.white54,
+                       fontSize: 12.0,
+                       fontWeight: FontWeight.w300),
+                 ),
               ]),
         ),
         Padding(
             padding: const EdgeInsets.only(
-              top: 10.0,
+              top: Dimens.space10,
             ),
             child: Container(
-              height: 140.0,
+              height: Dimens.space160,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
                     return TenantCard(
                       colorTop: Color(0xFF1E2026),
                       colorBottom: Color(0xFF23252E),
-                      image: index % 2 == 0
-                          ? "assets/icon/bank2.jpeg"
-                          : "assets/icon/bank.png",
+                      image: tenants[index].logo,
                       title: tenants[index].name,
                       tenantId: tenants[index].id,
                     );
@@ -172,11 +139,11 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 45.0,
             width: double.infinity,
             decoration: BoxDecoration(
-                color: Color(0xFF23252E),
+                color: Colors.white10,
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withOpacity(0.5),
                       blurRadius: 5.0,
                       spreadRadius: 0.0)
                 ]),
@@ -194,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     LocalManager.translate(word: "إبحث"),
                     style: TextStyle(
-                        fontFamily: "Sofia",
+                        fontFamily: Fonts.tajwalFamily,
                         fontWeight: FontWeight.w400,
                         color: Colors.white70,
                         fontSize: 16.0),
@@ -282,8 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
-            _background,
-//            _appBar,
             _body,
           ],
         ),
@@ -303,29 +268,29 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
 
             children: <Widget>[
-              InkWell(
-                onTap: () {
-
-                  Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new MyHomePageT5()));
-
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  margin: EdgeInsets.only(left: Dimens.space2,right: Dimens.space2),
-                  height: 60,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(Icons.menu_rounded),
-                      Text(
-                        LocalManager.translate(word: 'القائمة'),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+//              InkWell(
+//                onTap: () {
+//
+//                  Navigator.of(context).push(PageRouteBuilder(
+//                      pageBuilder: (_, __, ___) => new MyHomePageT5()));
+//
+//                },
+//                child: Container(
+//                  padding: EdgeInsets.symmetric(horizontal: 8),
+//                  margin: EdgeInsets.only(left: Dimens.space2,right: Dimens.space2),
+//                  height: 60,
+//                  child: Column(
+//                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                    children: [
+//                      Icon(Icons.menu_rounded),
+//                      Text(
+//                        LocalManager.translate(word: 'القائمة'),
+//                        style: TextStyle(color: Colors.white, fontSize: 12),
+//                      )
+//                    ],
+//                  ),
+//                ),
+//              ),
               InkWell(
                 onTap: () {},
                 child: Container(
@@ -422,14 +387,17 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           HashMap<String, List<Tenant>> map =
               (state as TenantsSuccess).getTenentsGrouped();
-          return ListView.builder(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: map.length,
-            itemBuilder: (BuildContext context, int index) {
-              String key = map.keys.elementAt(index);
-              return buildCategoriesView(key, map[key]);
-            },
+          return Container(
+            margin: EdgeInsets.only(top: Dimens.space16),
+            child: ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: map.length,
+              itemBuilder: (BuildContext context, int index) {
+                String key = map.keys.elementAt(index);
+                return buildCategoriesView(key, map[key]);
+              },
+            ),
           );
         }
       },
@@ -446,67 +414,87 @@ class TenantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 4.0, top: 3.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(PageRouteBuilder(
-              pageBuilder: (_, __, ___) => new BlocProvider(
-                    create: (_) => TenantsBloc()..add(TenantBranches(tenantId)),
-                    child: new BranchesScreen(
-                      title: title,
+    return Container(
+      width: Dimens.space92,
+      height: Dimens.space160,
+//      color: Colors.green,
+      child: Padding(
+        padding:
+            const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 4.0, top: 3.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (_, __, ___) => new BlocProvider(
+                      create: (_) => TenantsBloc()..add(TenantBranches(tenantId)),
+                      child: new BranchesScreen(
+                        title: title,
+                      ),
                     ),
-                  ),
-              transitionDuration: Duration(milliseconds: 600),
-              transitionsBuilder:
-                  (_, Animation<double> animation, __, Widget child) {
-                return Opacity(
-                  opacity: animation.value,
-                  child: child,
-                );
-              }));
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              height: 95.0,
-              width: 95.0,
-              decoration: BoxDecoration(
-                boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.black54)],
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                gradient: LinearGradient(
-                    colors: [colorTop, colorBottom],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight),
+                transitionDuration: Duration(milliseconds: 600),
+                transitionsBuilder:
+                    (_, Animation<double> animation, __, Widget child) {
+                  return Opacity(
+                    opacity: animation.value,
+                    child: child,
+                  );
+                }));
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                height: Dimens.space92,
+                width: Dimens.space92,
+
+                decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.black54)],
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  gradient: LinearGradient(
+                      colors: [colorTop, colorBottom],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: Align(
+                      alignment: Alignment.center,
+                    child: image == null || image.isEmpty?
+                       Image.asset(
+                        'assets/icon/bank.png',
+                        height: Dimens.space96,
+                        fit: BoxFit.cover,
+                      ): Image.memory(base64Decode(image),height: Dimens.space96 ,fit: BoxFit.fill,)
+                ),
+                ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: Align(
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      image,
-                      height: 60,
-                    )),
+              SizedBox(
+                height: 8.0,
               ),
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0),
-              child: Text(
-                title,
-                style: TextStyle(
-                    color: Colors.white70,
-                    fontFamily: Fonts.tajwalFamily,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+
+                   child: Text(
+//                     'جامعة عمان الاهلية الجميلة',
+                     title,
+                     maxLines: 3,
+
+                       textAlign: TextAlign.center,
+                       style: TextStyle(
+                      color: Colors.white70,
+
+                      fontFamily: Fonts.tajwalFamily,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600),
+                ),
+
+
+
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

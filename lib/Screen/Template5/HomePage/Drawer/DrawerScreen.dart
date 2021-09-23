@@ -1,5 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:food_template/_qaas/res/Colors.dart';
 import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:provider/provider.dart';
 
@@ -33,15 +34,13 @@ class MenuScreen extends StatelessWidget {
             }
           },
           child: Container(
+
             padding: EdgeInsets.only(
                 top: 90,
                 left: 12,
                 bottom: 8,
                 right: 8),
-//                right: MediaQuery.of(context).size.width / 2.9),
-            decoration: BoxDecoration(
-                gradient:
-                    LinearGradient(colors: [Color(0xFFF07DA4), Color(0xFFF5AE87)])),
+
             child:
 
             Column(
@@ -85,14 +84,16 @@ class MenuScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Spacer(),
-                Column(
-                  children: <Widget>[
-                    _listText("Notification", EvaIcons.bell),
-                    _listText("Call center", EvaIcons.phone),
-                    _listText("Settings", EvaIcons.settings),
-                    _listText("Favorite", EvaIcons.heart),
-                  ],
+                Container(
+                  margin: EdgeInsets.only(top: Dimens.space100),
+                  child: Column(
+                    children: <Widget>[
+                      _listText("Notification", EvaIcons.bell),
+                      _listText("Call center", EvaIcons.phone),
+                      _listText("Settings", EvaIcons.settings),
+                      _listText("Favorite", EvaIcons.heart),
+                    ],
+                  ),
                 ),
                 Spacer(),
                 InkWell(
@@ -110,7 +111,7 @@ class MenuScreen extends StatelessWidget {
 
   Widget _listText(String _text, IconData _iconData) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 30.0),
+      padding: EdgeInsets.only(bottom: Dimens.space4),
       child: Row(
         children: <Widget>[
           Container(
