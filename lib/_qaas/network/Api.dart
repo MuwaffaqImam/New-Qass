@@ -6,7 +6,7 @@ class Api {
   static const String BASE_URL_LOGIN = "https://qaas-is.azurewebsites.net";
   static const String GET_TENANTS = '/Tenant';
   static const String GET_BRANCHES = '/Location/';
-  static const String POST_LOGIN = 'connect/token';
+  static const String POST_LOGIN = '/connect/token';
   static const String POST_TICKETS = '/Ticket';
   static const String GET_SERVICES = '/services';
   static const String REGISTER = '/Accounts/register';

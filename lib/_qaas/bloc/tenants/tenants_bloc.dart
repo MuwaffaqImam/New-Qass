@@ -88,7 +88,7 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   Future<List<ServiceProvided>> fetchServices(String tenantId) async {
     print('fetching fetchServices ....');
     final response = await http.get(
-        '${Api.BASE_URL}${Api.GET_BRANCHES}$tenantId${Api.GET_SERVICES}',
+      '${Api.BASE_URL}${Api.GET_BRANCHES}$tenantId${Api.GET_SERVICES}',
     );
     print("Requesting ...");
     print(response.request.url);

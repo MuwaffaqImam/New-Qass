@@ -189,21 +189,15 @@ Stream<LoginState> _mapLoginToState(LoginWithEmailAndPhone event) async* {
 
 Future<Token> login({String username, String password}) async {
   print('login ....');
-  final response = await http.post(
-      Uri.https(
-        Api.BASE_URL_LOGIN,
-        '${Api.POST_LOGIN}',
-      ),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        'authorization': Api.buildingBasicAuthorization()
-      },
-      body: {
-        "username": "keylife",
-        "grant_type": "password",
-        "password": "Aa_123456",
-        "scope": ""
-      });
+  final response = await http.post('${Api.BASE_URL_LOGIN}${Api.POST_LOGIN}', headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    'authorization': Api.buildingBasicAuthorization()
+  }, body: {
+    "username": "keylife",
+    "grant_type": "password",
+    "password": "Aa_123456",
+    "scope": ""
+  });
   print("Requesting ...");
   print(response.request.url);
   print('response.body');
