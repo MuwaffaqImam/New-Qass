@@ -19,21 +19,23 @@ class signupTemplate1 extends StatefulWidget {
 
 class _signupTemplate1State extends State<signupTemplate1> {
   LoginBloc _loginBloc;
-  TextEditingController _usernameCon,
-      _emailCon,
-      _passCon = TextEditingController();
+  TextEditingController _emailCon = TextEditingController();
+  TextEditingController _passCon = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    // TODO: implement initState
-    _loginBloc = BlocProvider.of<LoginBloc>(context);
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) => LoginBloc(InitialState()), child: buildScreen());
+  }
+
+  Form buildScreen() {
+    _loginBloc = BlocProvider.of<LoginBloc>(context);
     double _height = MediaQuery.of(context).size.height;
     return Form(
       key: _formKey,
@@ -91,53 +93,6 @@ class _signupTemplate1State extends State<signupTemplate1> {
                                 fontWeight: FontWeight.w600,
                                 fontSize: 28.0),
                           ),
-//                          Padding(
-//                            padding: const EdgeInsets.only(
-//                                left: 25.0, right: 25.0, top: 40.0),
-//                            child: Container(
-//                              height: 53.5,
-//                              decoration: BoxDecoration(
-//                                color: Color(0xFF23252E),
-//                                borderRadius:
-//                                    BorderRadius.all(Radius.circular(5.0)),
-//                                border: Border.all(
-//                                  color: Colors.black12,
-//                                  width: 0.15,
-//                                ),
-//                              ),
-//                              child: Padding(
-//                                padding: const EdgeInsets.only(
-//                                    left: 12.0, right: 12.0, top: 5.0),
-//                                child: Theme(
-//                                  data:
-//                                      ThemeData(hintColor: Colors.transparent),
-//                                  child: Padding(
-//                                    padding: const EdgeInsets.only(left: 10.0),
-//                                    child: TextFormField(
-//                                      style: new TextStyle(color: Colors.white),
-//                                      textAlign: TextAlign.start,
-//                                      keyboardType: TextInputType.emailAddress,
-//                                      autocorrect: false,
-//                                      controller: _usernameCon,
-//                                      autofocus: false,
-//                                      decoration: InputDecoration(
-//                                          border: InputBorder.none,
-//                                          contentPadding: EdgeInsets.all(0.0),
-//                                          filled: true,
-//                                          fillColor: Colors.transparent,
-//                                          labelText: 'Username',
-//                                          hintStyle:
-//                                              TextStyle(color: Colors.white),
-//                                          labelStyle: TextStyle(
-//                                            color: Colors.white70,
-//                                          )),
-//                                    ),
-//                                  ),
-//                                ),
-//                              ),
-//                            ),
-//                          ),
-
                           SizedBox(
                             height: Dimens.space40,
                           ),
@@ -227,7 +182,6 @@ class _signupTemplate1State extends State<signupTemplate1> {
                                         } else
                                           return null;
                                       },
-
                                       obscureText: true,
                                       autofocus: false,
                                       decoration: InputDecoration(
@@ -252,19 +206,11 @@ class _signupTemplate1State extends State<signupTemplate1> {
                                 left: 20.0, right: 20.0, top: 40.0),
                             child: InkWell(
                               onTap: () {
-
-
                                 if (_formKey.currentState.validate())
-
                                   _loginBloc.add(RegisterUser(
                                     _emailCon.text.toString(),
                                     _passCon.text.toString(),
                                   ));
-
-//                               Navigator.of(context).pushReplacement(
-//                                   PageRouteBuilder(
-//                                       pageBuilder: (_, __, ___) =>
-//                                           ConfirmOtpPage()));
                               },
                               child: Container(
                                 height: 52.0,
