@@ -207,9 +207,7 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
                               child: InkWell(
                                 onTap: () {
 
-
                                   if (_formKey.currentState.validate()) {
-
                                     print(_phoneCon.text.toString());
                                     _loginBloc.add(LoginWithEmailAndPhone(
                                         _phoneCon.text.toString(),
@@ -218,9 +216,6 @@ class _signinPhoneTemplate1State extends State<signinPhoneTemplate1> {
                                             .toString())).toString(),
                                         ''));
                                   }
-
-//
-
 //                                  Navigator.of(context).pushReplacement(
 //                                PageRouteBuilder(
 //                                    pageBuilder: (_, __, ____) =>

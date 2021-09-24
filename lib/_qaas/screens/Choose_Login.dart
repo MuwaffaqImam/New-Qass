@@ -339,12 +339,7 @@ class _chooseLoginState extends State<chooseLogin>
                                     Navigator.of(context).pushReplacement(
                                         PageRouteBuilder(
                                             pageBuilder: (_, __, ___) =>
-                                                BlocProvider(
-                                                    create: (context) =>
-                                                        LoginBloc(
-                                                            InitialState()),
-                                                    child:
-                                                        new signupTemplate1())));
+                                                new signupTemplate1()));
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
