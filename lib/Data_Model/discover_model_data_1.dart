@@ -37,8 +37,7 @@ List discover = [
     name: "Emma Witson",
     profilePicture: "https://images.pexels.com/photos/3779853/pexels-photo-3779853.png?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
     topping: "sauce, mayonnaise, cheese",
-    colors: [   Color(0xFFF9D976),
-                        Color(0xFFF39F86),],
+    colors: [   Color(0xFFF9D976), Color(0xFFF39F86),],
   ),
   DiscoverDataModel1(
     title: "Black Bean Burritos",

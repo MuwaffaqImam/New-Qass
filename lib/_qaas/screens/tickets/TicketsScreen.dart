@@ -6,6 +6,7 @@ import 'package:food_template/Data_Model/discover_model_data_1.dart';
 import 'package:food_template/Screen/Template1/B1_Home_Screen/Search_Screen/Search_Screen_T1.dart';
 import 'package:food_template/Screen/Template1/B3_Discover_Screen/Detail_Screen_Discover/Discover_Detail_1.dart';
 import 'package:food_template/_qaas/bloc/tenants/tenants_bloc.dart';
+import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/models/Tickets.dart';
 import 'package:food_template/_qaas/res/Fonts.dart';
 
@@ -14,15 +15,6 @@ class TicketsScreen extends StatefulWidget {
 
   @override
   _TicketsScreenState createState() => _TicketsScreenState();
-}
-
-class Product {
-  String image;
-  String name;
-  String description;
-  double price;
-
-  Product(this.image, this.name, this.description, this.price);
 }
 
 class _TicketsScreenState extends State<TicketsScreen> {
@@ -46,69 +38,17 @@ class _TicketsScreenState extends State<TicketsScreen> {
       child: AppBar(
         brightness: Brightness.dark,
         backgroundColor: Color(0xFF1E2026),
-        title: Padding(
-          padding: const EdgeInsets.only(top: 33.0),
-          child: Text(
-            "Discover",
-            style: TextStyle(
-                fontFamily: "Sofia",
-                fontWeight: FontWeight.w800,
-                fontSize: 33.0,
-                letterSpacing: 1.5,
-                color: Colors.white),
-          ),
+        title: Text(
+          LocalManager.translate(word: 'التذاكر'),
+          style: TextStyle(
+              fontFamily: Fonts.elMessriFamily,
+              fontWeight: FontWeight.w800,
+              fontSize: 33.0,
+              letterSpacing: 1.5,
+              color: Colors.white),
         ),
         centerTitle: false,
         elevation: 0.0,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 15.0, left: 10.0),
-            child: Row(
-              children: <Widget>[
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        if (colorIconCard == true) {
-                          colorIconCard = false;
-                          colorIconCard2 = true;
-                          chosseCard = false;
-                        } else {
-                          colorIconCard = true;
-                          colorIconCard2 = false;
-                          chosseCard = true;
-                        }
-                      });
-                    },
-                    child: Icon(
-                      Icons.calendar_view_day,
-                      color: colorIconCard ? Colors.white30 : Color(0xFFFF975D),
-                    )),
-                SizedBox(
-                  width: 14.0,
-                ),
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        if (colorIconCard2 == true) {
-                          colorIconCard2 = false;
-                          colorIconCard = true;
-                          chosseCard = true;
-                        } else {
-                          colorIconCard2 = true;
-                          colorIconCard = false;
-                          chosseCard = false;
-                        }
-                      });
-                    },
-                    child: Icon(
-                      Icons.dashboard,
-                      color:
-                          colorIconCard2 ? Colors.white30 : Color(0xFFFF975D),
-                    )),
-              ],
-            ),
-          )
-        ],
       ),
     );
 
@@ -133,6 +73,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
   Widget buildBody(Ticket ticket) {
     return Column(
+      textDirection: TextDirection.ltr,
       children: <Widget>[
         Text(
           'Ticket Number is ${ticket.ticketNumber}',
@@ -143,34 +84,23 @@ class _TicketsScreenState extends State<TicketsScreen> {
             fontWeight: FontWeight.w800,
           ),
         ),
-        _search(),
-        chosseCard
-            ? Expanded(
-                child: PageView(
-                  physics: ClampingScrollPhysics(),
-                  controller: _pageController,
-                  children: <Widget>[
-                    for (var i = 0; i < discover.length; i++)
-                      DiscoverCardWidget2(
-                          discoverDataModel1: discover[i],
-                          pageController: _pageController,
-                          currentPage: i)
-                  ],
-                ),
-              )
-            : Expanded(
-                child: PageView(
-                  physics: ClampingScrollPhysics(),
-                  controller: _pageController,
-                  children: <Widget>[
-                    for (var i = 0; i < discover.length; i++)
-                      DiscoverCardWidget1(
-                          discoverDataModel1: discover[i],
-                          pageController: _pageController,
-                          currentPage: i)
-                  ],
-                ),
-              )
+        Expanded(
+          child: DiscoverCardWidget2(
+              discoverDataModel1: new DiscoverDataModel1(
+                title: "${ticket.ticketNumber}",
+                image: "assets/image/plate_food/19.png",
+                location: "عمان الأردن",
+                calorie: "0790000000",
+                price: "\$ 25.00",
+                name: "Issabela Lopi",
+                profilePicture:
+                    "https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+                topping: "sauce, mayonnaise, cheese",
+                colors: [Color(0xFFFFCC2F), Color(0xFFEF5734)],
+              ),
+              pageController: _pageController,
+              currentPage: 7),
+        )
       ],
     );
   }

@@ -142,7 +142,7 @@ class ServiceCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (_, __, ___) => new BlocProvider(
-                create: (_) => TenantsBloc()..add(SendTickets(locationId: service.locationId,serviceId: service.serviceId)),
+                create: (_) => TenantsBloc()..add(SendTickets(locationId: service.locationId,serviceId: service.id)),
                 child: new TicketsScreen(),
               ),
               transitionDuration: Duration(milliseconds: 600),

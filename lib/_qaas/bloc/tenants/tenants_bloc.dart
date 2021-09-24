@@ -64,17 +64,17 @@ class TenantsBloc extends Bloc<TenantsEvent, TenantsState> {
   Future<Ticket> fetchTickets(
       {String serviceId, String locationId, int type = 0}) async {
     print('PostTicket ....');
-    final response =
-        await http.post('${Api.BASE_URL}/${Api.POST_TICKETS}', headers: {
-      'accept': 'text/plain',
-      'Content-Type': 'text/json',
-      'authorization': await Api.buildingBearerAuthorization()
-    }, body: {
-      "serviceId": "$serviceId",
-      "location": "$locationId",
-      "phone": "string",
-      "ticketType": 0
-    });
+    final response = await http.post('${Api.BASE_URL}${Api.POST_TICKETS}',
+        headers: {
+          "content-type": "application/json",
+          'authorization': await Api.buildingBearerAuthorization()
+        },
+        body: jsonEncode({
+          "serviceId": "$serviceId",
+          "location": "$locationId",
+          "phone": "string",
+          "ticketType": 0
+        }));
     print("Requesting ...");
     print(response.request.url);
     print('response.body');
