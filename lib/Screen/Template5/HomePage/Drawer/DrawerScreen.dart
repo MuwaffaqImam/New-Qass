@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:food_template/_qaas/res/Colors.dart';
+import 'package:food_template/_qaas/res/Fonts.dart';
 import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:provider/provider.dart';
 
@@ -25,83 +26,82 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Scaffold(
-
-        body: GestureDetector(
-          onPanUpdate: (details) {
-            //on swiping left
-            if (details.delta.dx < -6) {
-              Provider.of<MenuController>(context, listen: true).toggle();
-            }
-          },
-          child: Container(
-
-            padding: EdgeInsets.only(
-                top: 90,
-                left: 12,
-                bottom: 8,
-                right: 8),
-
-            child:
-
-            Column(
-              children: <Widget>[
-                InkWell(
-                  onTap: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: CircularImage(
-                          NetworkImage(imageUrl),
+        body: Container(
+          color: MyColors.eggplant,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              //on swiping left
+              if (details.delta.dx < -6) {
+                Provider.of<MenuController>(context, listen: true).toggle();
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 90,
+                  left: 12,
+                  bottom: 8,
+                  right: 8),
+              child:
+              Column(
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: CircularImage(
+                            NetworkImage(imageUrl),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: Dimens.space20,),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Dakota Jonson',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "Sofia",
-                              fontSize: 20,
+                        SizedBox(width: Dimens.space20,),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'احمد الأحمد',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: Fonts.elMessriFamily,
+                                fontSize: 20,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'dakota@gmail.com',
-                            style: TextStyle(
-                              color: Colors.white54,
-                              fontFamily: "Sofia",
-                              fontSize: 15,
+                            Text(
+                              'm.ahmed@gmail.com',
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontFamily: Fonts.elMessriFamily,
+                                fontSize: 15,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: Dimens.space100),
-                  child: Column(
-                    children: <Widget>[
-                      _listText("Notification", EvaIcons.bell),
-                      _listText("Call center", EvaIcons.phone),
-                      _listText("Settings", EvaIcons.settings),
-                      _listText("Favorite", EvaIcons.heart),
-                    ],
+                  Container(
+                    margin: EdgeInsets.only(top: Dimens.space100),
+                    child: Column(
+                      children: <Widget>[
+                        _listText("الإشعارات", EvaIcons.bell),
+                        _listText("إتصل بنا", EvaIcons.phone),
+                        _listText("الإعدادات", EvaIcons.settings),
+                        _listText("المستخدم", EvaIcons.person),
+                      ],
+                    ),
                   ),
-                ),
-                Spacer(),
-                InkWell(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: _listText("Logout", Icons.exit_to_app)),
-              ],
+                  Spacer(),
+                  InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: _listText("تسجيل الخروج", Icons.exit_to_app)),
+                ],
+              ),
             ),
           ),
         ),

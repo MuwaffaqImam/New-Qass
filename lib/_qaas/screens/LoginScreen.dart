@@ -6,6 +6,7 @@ import 'package:food_template/Screen/Template1/Login_Screen/SignIn_Screen.dart';
 import 'package:food_template/_qaas/bloc/login/login_bloc.dart';
 import 'package:food_template/_qaas/bloc/login/login_event.dart';
 import 'package:food_template/_qaas/bloc/login/login_state.dart';
+import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/models/PrefrenceManager.dart';
 import 'package:food_template/_qaas/models/Token.dart';
 
@@ -20,14 +21,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Login_Screen/Signup_Screen.dart';
 import 'common/dialog/error_dialog.dart';
 
-class chooseLogin extends StatefulWidget {
-  chooseLogin({Key key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  static PageRouteBuilder getRoute() {
+    return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => new BlocProvider(
+              create: (context) => LoginBloc(InitialState()),
+              child: LoginScreen(),
+            ),
+        transitionDuration: Duration(milliseconds: 600),
+        transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+          return Opacity(
+            opacity: animation.value,
+            child: child,
+          );
+        });
+  }
+
+  LoginScreen({Key key}) : super(key: key);
 
   @override
-  _chooseLoginState createState() => _chooseLoginState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _chooseLoginState extends State<chooseLogin>
+class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   TextEditingController emailController;
 
@@ -100,7 +116,6 @@ class _chooseLoginState extends State<chooseLogin>
               if (state is LoginSuccess) {
                 //go  to profile
                 Token token = state.token;
-                PreferenceManager.saveTokenToPref(token);
                 if (Navigator.canPop(context)) {
                   Navigator.pop(context);
                 } else {
@@ -168,7 +183,7 @@ class _chooseLoginState extends State<chooseLogin>
                                       autofocus: false,
                                       controller: emailController,
                                       decoration: InputDecoration(
-                                        labelText: "Enter Email",
+                                        labelText: LocalManager.translate(word: 'أدخل الإيميل'),
                                         labelStyle:
                                             TextStyle(color: Colors.white70),
                                         fillColor: Colors.white,
@@ -216,7 +231,7 @@ class _chooseLoginState extends State<chooseLogin>
                                         },
                                         controller: passwordController,
                                         decoration: InputDecoration(
-                                          labelText: "Enter Password",
+                                          labelText: LocalManager.translate(word: 'أدخل كلمة السر'),
                                           labelStyle:
                                               TextStyle(color: Colors.white70),
                                           fillColor: Colors.white,
@@ -251,7 +266,6 @@ class _chooseLoginState extends State<chooseLogin>
                                           onTap: () {
                                             if (_formKey.currentState
                                                 .validate()) {
-                                              print('hhhhhhhhhhh');
                                               print(emailController.text);
 
                                               _loginBloc.add(
@@ -268,7 +282,7 @@ class _chooseLoginState extends State<chooseLogin>
 //
                                           },
                                           child: ButtonCustom(
-                                            txt: "Login",
+                                            txt: LocalManager.translate(word: 'تسجيل الدخول'),
                                             gradient1: Color(0xFFFEE140),
                                             gradient2: Color(0xFFFA709A),
                                             border: Colors.transparent,
@@ -306,7 +320,7 @@ class _chooseLoginState extends State<chooseLogin>
                                                         new signinPhoneTemplate1())));
                                       },
                                       child: ButtonCustom(
-                                        txt: "Login with Phone",
+                                        txt: LocalManager.translate(word: 'تسجيل دخول عن طريق الهاتف'),
                                         gradient1: Colors.white24,
                                         gradient2: Colors.white,
                                         border: Colors.transparent,
@@ -326,7 +340,7 @@ class _chooseLoginState extends State<chooseLogin>
 //
                                       },
                                       child: ButtonCustom(
-                                        txt: "Connect with Google",
+                                        txt: LocalManager.translate(word: 'تسجيل دخول عن طريق جوجل'),
                                         gradient1: Colors.red,
                                         gradient2: Colors.redAccent,
                                         border: Colors.transparent,
@@ -339,7 +353,12 @@ class _chooseLoginState extends State<chooseLogin>
                                     Navigator.of(context).pushReplacement(
                                         PageRouteBuilder(
                                             pageBuilder: (_, __, ___) =>
-                                                new signupTemplate1()));
+                                                BlocProvider(
+                                                    create: (context) =>
+                                                        LoginBloc(
+                                                            InitialState()),
+                                                    child:
+                                                        new signupTemplate1())));
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -347,14 +366,14 @@ class _chooseLoginState extends State<chooseLogin>
                                         CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        "Don't have an account?",
+                                        LocalManager.translate(word: 'لا تمتلك حساب ؟'),
                                         style: TextStyle(
                                             fontFamily: "Sofia",
                                             color: Colors.white,
                                             fontWeight: FontWeight.w200,
                                             fontSize: 15.0),
                                       ),
-                                      Text(" Signup",
+                                      Text(" قم بإنشاء حساب الآن",
                                           style: TextStyle(
                                               fontFamily: "Sofia",
                                               color: Color(0xFFFA709A),

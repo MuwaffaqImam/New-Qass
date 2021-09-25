@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_template/_qaas/bloc/login/login_bloc.dart';
 import 'package:food_template/_qaas/bloc/login/login_event.dart';
 import 'package:food_template/_qaas/bloc/login/login_state.dart';
+import 'package:food_template/_qaas/locale/LocaleManager.dart';
+import 'package:food_template/_qaas/locale/RouterManager.dart';
+import 'package:food_template/_qaas/res/Fonts.dart';
 import 'package:food_template/_qaas/res/constant.dart';
 import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:food_template/_qaas/res/general.dart';
 
+import '../LoginScreen.dart';
 import 'Confirm_OTP_Screen.dart';
 import 'SignIn_Screen.dart';
 
@@ -18,10 +22,13 @@ class signupTemplate1 extends StatefulWidget {
 }
 
 class _signupTemplate1State extends State<signupTemplate1> {
-  LoginBloc _loginBloc;
   TextEditingController _emailCon = TextEditingController();
   TextEditingController _passCon = TextEditingController();
+  Rout route = Rout.MAIN_SCREEN;
   final _formKey = GlobalKey<FormState>();
+  Rout routTo;
+
+  _signupTemplate1State();
 
   @override
   void initState() {
@@ -30,25 +37,26 @@ class _signupTemplate1State extends State<signupTemplate1> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => LoginBloc(InitialState()), child: buildScreen());
+    return buildScreen();
   }
 
   Form buildScreen() {
-    _loginBloc = BlocProvider.of<LoginBloc>(context);
     double _height = MediaQuery.of(context).size.height;
     return Form(
       key: _formKey,
       child: Scaffold(
         body: BlocBuilder<LoginBloc, LoginState>(
-          bloc: _loginBloc,
           builder: (_, state) {
-            if (state is LoginSuccess) {
-              //go  to profile
+            if (state is RegisterSuccess) {
+              Future.delayed(Duration(milliseconds: 500), () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('تم تسجيل الدخول في نجاح')));
+                Navigator.of(context).pop();
+              });
             } else if (state is LoginFailure) {
               Future.delayed(Duration(milliseconds: 300), () {
                 General.callErrorDialog(context, state.errorMessage);
-                _loginBloc.add(Reset());
+                BlocProvider.of<LoginBloc>(context).add(Reset());
               });
             }
 
@@ -86,9 +94,9 @@ class _signupTemplate1State extends State<signupTemplate1> {
                             height: 30.0,
                           ),
                           Text(
-                            "Create Account",
+                          LocalManager.translate(word:   "قم بإنشاء الحساب"),
                             style: TextStyle(
-                                fontFamily: "Sofia",
+                                fontFamily: Fonts.elMessriFamily,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 28.0),
@@ -136,7 +144,7 @@ class _signupTemplate1State extends State<signupTemplate1> {
                                           contentPadding: EdgeInsets.all(0.0),
                                           filled: true,
                                           fillColor: Colors.transparent,
-                                          labelText: 'Email',
+                                          labelText: LocalManager.translate(word: 'الإيميل'),
                                           hintStyle:
                                               TextStyle(color: Colors.white),
                                           labelStyle: TextStyle(
@@ -189,7 +197,7 @@ class _signupTemplate1State extends State<signupTemplate1> {
                                           contentPadding: EdgeInsets.all(0.0),
                                           filled: true,
                                           fillColor: Colors.transparent,
-                                          labelText: 'Password',
+                                          labelText: LocalManager.translate(word: 'كلمة السر'),
                                           hintStyle:
                                               TextStyle(color: Colors.white),
                                           labelStyle: TextStyle(
@@ -207,7 +215,8 @@ class _signupTemplate1State extends State<signupTemplate1> {
                             child: InkWell(
                               onTap: () {
                                 if (_formKey.currentState.validate())
-                                  _loginBloc.add(RegisterUser(
+                                  BlocProvider.of<LoginBloc>(context)
+                                      .add(RegisterUser(
                                     _emailCon.text.toString(),
                                     _passCon.text.toString(),
                                   ));
@@ -224,46 +233,51 @@ class _signupTemplate1State extends State<signupTemplate1> {
                                 ),
                                 child: Center(
                                     child: Text(
-                                  "Signup",
+                                  "إنشاء حساب",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 17.0,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Sofia",
+                                      fontFamily: Fonts.tajwalFamily,
                                       letterSpacing: 0.9),
                                 )),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(LoginScreen.getRoute());
+
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    LocalManager.translate(word: 'تمتلك حساب ؟ إذهب إلى'),
+                                    style: TextStyle(
+                                        fontFamily: Fonts.tajwalFamily,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w200,
+                                        fontSize: 15.0),
+                                  ),
+                                  Text(
+                                  LocalManager.translate(word: ' تسجيل الدخول'),
+                                      style: TextStyle(
+                                          fontFamily: Fonts.tajwalFamily,
+                                          color: Color(0xFFFA709A),
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 15.0))
+                                ],
                               ),
                             ),
                           ),
                           SizedBox(
                             height: 18.0,
                           ),
-//                    InkWell(
-//                      onTap: () {
-//                        Navigator.of(context).pushReplacement(PageRouteBuilder(
-//                            pageBuilder: (_, __, ___) => signinTemplate1()));
-//                      },
-//                      child: Row(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-//                        crossAxisAlignment: CrossAxisAlignment.center,
-//                        children: <Widget>[
-//                          Text(
-//                            "Have an account?",
-//                            style: TextStyle(
-//                                fontFamily: "Sofia",
-//                                color: Colors.white,
-//                                fontWeight: FontWeight.w200,
-//                                fontSize: 15.0),
-//                          ),
-//                          Text(" Signin",
-//                              style: TextStyle(
-//                                  fontFamily: "Sofia",
-//                                  color: Color(0xFFFA709A),
-//                                  fontWeight: FontWeight.w300,
-//                                  fontSize: 15.0))
-//                        ],
-//                      ),
-//                    ),
                         ],
                       ),
                     ),

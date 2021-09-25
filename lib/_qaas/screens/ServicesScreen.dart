@@ -6,12 +6,32 @@ import 'package:food_template/Data_Model/categoryDetail.dart';
 import 'package:food_template/_qaas/bloc/tenants/tenants_bloc.dart';
 import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/models/Branch.dart';
+import 'package:food_template/_qaas/models/PrefrenceManager.dart';
 import 'package:food_template/_qaas/models/Service.dart';
 import 'package:food_template/_qaas/res/Fonts.dart';
+import 'package:food_template/_qaas/screens/LoginScreen.dart';
 import 'package:food_template/_qaas/screens/tickets/TicketsScreen.dart';
 
 class ServiceScreen extends StatelessWidget {
   final String title;
+
+  static PageRouteBuilder getRoute(Branch branch){
+    return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => new BlocProvider(
+          create: (_) => TenantsBloc()..add(TenantServices(branch.id)),
+          child: new ServiceScreen(
+            title: branch.name,
+          ),
+        ),
+        transitionDuration: Duration(milliseconds: 600),
+        transitionsBuilder:
+            (_, Animation<double> animation, __, Widget child) {
+          return Opacity(
+            opacity: animation.value,
+            child: child,
+          );
+        });
+  }
 
   ServiceScreen({this.title});
 
@@ -23,8 +43,8 @@ class ServiceScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Center(
                 child: const CircularProgressIndicator(
-              color: Colors.amber,
-            )),
+                  color: Colors.amber,
+                )),
           );
         else if (state is Failure) {
           return const Center(child: Text('Error'));
@@ -140,19 +160,11 @@ class ServiceCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(PageRouteBuilder(
-              pageBuilder: (_, __, ___) => new BlocProvider(
-                create: (_) => TenantsBloc()..add(SendTickets(locationId: service.locationId,serviceId: service.id)),
-                child: new TicketsScreen(),
-              ),
-              transitionDuration: Duration(milliseconds: 600),
-              transitionsBuilder:
-                  (_, Animation<double> animation, __, Widget child) {
-                return Opacity(
-                  opacity: animation.value,
-                  child: child,
-                );
-              }));
+          PreferenceManager.getTokenAccess().then((value) =>
+          value.isEmpty
+              ? buildDialog(context)
+              : Navigator.of(context).push(TicketsScreen.getRoute(
+              locationId: service.locationId, serviceId: service.id)));
         },
         child: Container(
           height: 140.0,
@@ -196,8 +208,7 @@ class ServiceCard extends StatelessWidget {
                             ),
                             Padding(
                                 padding: EdgeInsets.only(top: 2.0, left: 8)),
-                            Text('${service.startTime}',
-                                style: _txtStyleSub)
+                            Text('${service.startTime}', style: _txtStyleSub)
                           ],
                         ),
                       ),
@@ -214,9 +225,7 @@ class ServiceCard extends StatelessWidget {
                             ),
                             Padding(
                                 padding: EdgeInsets.only(top: 2.0, left: 8)),
-                            Text(
-                                '${service.endTime}',
-                                style: _txtStyleSub)
+                            Text('${service.endTime}', style: _txtStyleSub)
                           ],
                         ),
                       ),
@@ -233,8 +242,7 @@ class ServiceCard extends StatelessWidget {
                             ),
                             Padding(
                                 padding: EdgeInsets.only(top: 2.0, left: 8)),
-                            Text(
-                                '${service.service.description}',
+                            Text('${service.service.description}',
                                 style: _txtStyleSub)
                           ],
                         ),
@@ -270,4 +278,38 @@ class ServiceCard extends StatelessWidget {
       ),
     );
   }
+
+  buildDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      // false = user must tap button, true = tap outside dialog
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(LocalManager.translate(word: 'لحظة من فضلك!')),
+          content: Text(
+              LocalManager.translate(word: 'عليك بتسجيل الدخول لحجز تذكرة')),
+          actions: <Widget>[
+            TextButton(
+              child: Text('إلغاء'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+              },
+            ),
+            TextButton(
+              child: Text(LocalManager.translate(word: 'تسجيل دخول'),
+                style: TextStyle(color: Colors.deepOrangeAccent),),
+              onPressed: () {// Dismiss alert dialog
+                Navigator.of(context).pushReplacement(
+                    LoginScreen.getRoute()) ;// Dismiss alert dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
+
+

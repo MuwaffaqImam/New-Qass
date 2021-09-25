@@ -14,6 +14,6 @@ class PreferenceManager {
     var accessToken = prefs.getString(_tokenAccess);
     print('accessToken');
     print(accessToken);
-    return accessToken;
+    return accessToken ?? "";
   }
 }

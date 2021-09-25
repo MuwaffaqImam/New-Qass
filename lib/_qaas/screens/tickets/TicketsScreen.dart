@@ -8,10 +8,28 @@ import 'package:food_template/Screen/Template1/B3_Discover_Screen/Detail_Screen_
 import 'package:food_template/_qaas/bloc/tenants/tenants_bloc.dart';
 import 'package:food_template/_qaas/locale/LocaleManager.dart';
 import 'package:food_template/_qaas/models/Tickets.dart';
+import 'package:food_template/_qaas/res/Colors.dart';
 import 'package:food_template/_qaas/res/Fonts.dart';
 
 class TicketsScreen extends StatefulWidget {
   TicketsScreen({Key key}) : super(key: key);
+
+  static PageRouteBuilder getRoute({String locationId, String serviceId}) {
+    return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => new BlocProvider(
+              create: (_) => TenantsBloc()
+                ..add(
+                    SendTickets(locationId: locationId, serviceId: serviceId)),
+              child: new TicketsScreen(),
+            ),
+        transitionDuration: Duration(milliseconds: 600),
+        transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+          return Opacity(
+            opacity: animation.value,
+            child: child,
+          );
+        });
+  }
 
   @override
   _TicketsScreenState createState() => _TicketsScreenState();
@@ -73,10 +91,9 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
   Widget buildBody(Ticket ticket) {
     return Column(
-      textDirection: TextDirection.ltr,
       children: <Widget>[
         Text(
-          'Ticket Number is ${ticket.ticketNumber}',
+         LocalManager.translate(word: 'تم حجز التذكرة'),
           style: TextStyle(
             color: Colors.white,
             fontFamily: Fonts.elMessriFamily,
@@ -85,75 +102,24 @@ class _TicketsScreenState extends State<TicketsScreen> {
           ),
         ),
         Expanded(
-          child: DiscoverCardWidget2(
-              discoverDataModel1: new DiscoverDataModel1(
-                title: "${ticket.ticketNumber}",
-                image: "assets/image/plate_food/19.png",
-                location: "عمان الأردن",
-                calorie: "0790000000",
-                price: "\$ 25.00",
-                name: "Issabela Lopi",
-                profilePicture:
-                    "https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
-                topping: "sauce, mayonnaise, cheese",
-                colors: [Color(0xFFFFCC2F), Color(0xFFEF5734)],
-              ),
-              pageController: _pageController,
-              currentPage: 7),
+          child: TicketView(
+              ticket: ticket, pageController: _pageController, currentPage: 7),
         )
       ],
     );
   }
 
-  Widget _search() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 15.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-              PageRouteBuilder(pageBuilder: (_, __, ___) => searchAppbar()));
-        },
-        child: Container(
-          height: 52.0,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(50.0)),
-              color: Color(0xFF23252E)),
-          child: Center(
-            child: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 20.0,
-                ),
-                Icon(
-                  Icons.search,
-                  color: Color(0xFFFF975D),
-                ),
-                SizedBox(
-                  width: 15.0,
-                ),
-                Text("Search",
-                    style: TextStyle(
-                        fontFamily: "Sofia",
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white70,
-                        fontSize: 16.0))
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 }
 
-class DiscoverCardWidget2 extends StatelessWidget {
-  final DiscoverDataModel1 discoverDataModel1;
+class TicketView extends StatelessWidget {
+  // final DiscoverDataModel1 discoverDataModel1;
+  final Ticket ticket;
   final PageController pageController;
   final int currentPage;
 
-  const DiscoverCardWidget2(
-      {Key key, this.discoverDataModel1, this.pageController, this.currentPage})
+  const TicketView(
+      {Key key, this.ticket, this.pageController, this.currentPage})
       : super(key: key);
 
   @override
@@ -163,23 +129,9 @@ class DiscoverCardWidget2 extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 700),
-                  transitionsBuilder:
-                      (_, Animation<double> animation, __, Widget child) {
-                    return Opacity(
-                      opacity: animation.value,
-                      child: child,
-                    );
-                  },
-                  pageBuilder: (context, _, __) => DiscoverDetailScreen1(
-                        discoverDataModel1: discoverDataModel1,
-                      )));
-        },
+        onTap: () {},
         child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16),
           height: _height / 1.52,
           width: double.infinity,
           decoration: BoxDecoration(
@@ -191,134 +143,106 @@ class DiscoverCardWidget2 extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: discoverDataModel1.colors,
+                colors: [Color(0xFFFFCC2F), Color(0xFFEF5734)],
               )),
           child: Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Container(
-                      height: 58.0,
-                      width: 58.0,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: CachedNetworkImageProvider(
-                                discoverDataModel1.profilePicture,
-                                errorListener: () => new Icon(Icons.error),
-                              ),
-                              fit: BoxFit.cover),
-                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                          color: Colors.white),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            discoverDataModel1.name,
-                            style: TextStyle(
-                                fontFamily: "Sofia",
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                fontSize: 20.0),
-                          ),
-                          Text("Chef",
-                              style: TextStyle(
-                                  fontFamily: "Sofia",
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.white,
-                                  fontSize: 17.0)),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 2.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 190.0),
-                  child: Container(
-                    height: 3.5,
-                    width: double.infinity,
-                    color: Colors.white54,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 2.0,
                   ),
-                ),
-                SizedBox(height: 10.0),
-                Text(discoverDataModel1.title,
-                    style: TextStyle(
-                        fontFamily: "Sofia",
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        fontSize: 30.0)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Topping: ",
-                      style: TextStyle(
-                          fontFamily: "Sofia",
-                          fontWeight: FontWeight.w300,
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 18.0),
-                    ),
-                    Container(
-                        width: 200.0,
-                        child: Text(
-                          discoverDataModel1.topping,
-                          style: TextStyle(
-                              fontFamily: "Sofia",
-                              fontWeight: FontWeight.w300,
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: 18.0),
-                          overflow: TextOverflow.fade,
-                        )),
-                  ],
-                ),
-                Center(
-                    child: Padding(
-                  padding: const EdgeInsets.only(right: 20.0, top: 10.0),
-                  child: Hero(
-                      tag: "image-${discoverDataModel1.title}",
-                      child: Material(
-                          color: Colors.transparent,
-                          child: Image.asset(
-                            discoverDataModel1.image,
-                            height: _height * 0.3,
-                          ))),
-                )),
-                Padding(
-                  padding: const EdgeInsets.only(right: 25.0, top: 15.0),
-                  child: Align(
-                    alignment: Alignment.center,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 190.0),
                     child: Container(
-                      height: 40.0,
-                      width: 100.0,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(50.0),
+                      height: 3.5,
+                      width: double.infinity,
+                      color: Colors.white54,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(LocalManager.translate(word: 'الخدمة'),
+                      style: TextStyle(
+                          fontFamily: Fonts.elMessriFamily,
+                          fontWeight: FontWeight.w700,
+                          color: MyColors.eggplant,
+                          fontSize: 18.0)),
+                  Text(
+                      LocalManager.translate(
+                          word: '${ticket.service.name}'),
+                      style: TextStyle(
+                          fontFamily: Fonts.elMessriFamily,
+                          fontWeight: FontWeight.w100,
+                         color: MyColors.eggplant,
+                          fontSize: 24.0)),
+                  Text(LocalManager.translate(word: 'التاريخ'),
+                      style: TextStyle(
+                          fontFamily: Fonts.elMessriFamily,
+                          fontWeight: FontWeight.w700,
+                          color: MyColors.eggplant,
+                          fontSize: 18.0)),
+                  Text(
+                      LocalManager.translate(word: '${ticket.enterDate}'),
+                      style: TextStyle(
+                          fontFamily: Fonts.elMessriFamily,
+                          fontWeight: FontWeight.w100,
+                          color: MyColors.eggplant,
+                          fontSize: 24.0)),
+                  Text(LocalManager.translate(word: ' عدد الأشخاص المنتظرين'),
+                      style: TextStyle(
+                          fontFamily: Fonts.elMessriFamily,
+                          fontWeight: FontWeight.w700,
+                          color: MyColors.eggplant,
+                          fontSize: 18.0)),
+                  Text(
+                      LocalManager.translate(
+                          word: '${ticket.counterNumber}'),
+                      style: TextStyle(
+                          fontFamily: Fonts.elMessriFamily,
+                          fontWeight: FontWeight.w100,
+                          color: MyColors.eggplant,
+                          fontSize: 24.0)),
+                  Center(
+                    child: Text(LocalManager.translate(word: 'رقم التذكرة'),
+                        style: TextStyle(
+                            fontFamily: Fonts.elMessriFamily,
+                            fontWeight: FontWeight.w700,
+                            color: MyColors.eggplant,
+                            fontSize: 30.0)),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 25.0, top: 15.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50.0),
+                              ),
+                              color: Colors.white),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${ticket.ticketNumber}',
+                                style: TextStyle(
+                                    fontFamily: Fonts.tajwalFamily,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 50.0),
+                              ),
+                            ),
                           ),
-                          color: Colors.white),
-                      child: Center(
-                        child: Text(
-                          discoverDataModel1.price,
-                          style: TextStyle(
-                              fontFamily: "Sofia",
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20.0),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

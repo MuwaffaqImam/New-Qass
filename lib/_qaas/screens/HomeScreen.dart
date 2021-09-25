@@ -8,12 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_template/Data_Model/dinner.dart';
-import 'package:food_template/Data_Model/lunch.dart';
-import 'package:food_template/Screen/Template5/HomePage/Drawer/DrawerScreen.dart';
-import 'package:food_template/Screen/Template5/HomePage/HomePageT5.dart';
-import 'package:food_template/_qaas/bloc/login/login_bloc.dart';
-import 'package:food_template/_qaas/bloc/login/login_state.dart';
 import 'package:food_template/_qaas/res/dimens.dart';
 import 'package:food_template/_qaas/screens/BranchesScreen.dart';
 import 'package:food_template/_qaas/locale/LocaleManager.dart';
@@ -23,7 +17,7 @@ import 'package:food_template/_qaas/screens/qr_scanner.dart';
 
 import '../bloc/tenants/tenants_bloc.dart';
 import '../models/Tenants.dart';
-import 'Choose_Login.dart';
+import 'LoginScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -226,7 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     return Scaffold(
-
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF975D),
@@ -268,29 +261,6 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
 
             children: <Widget>[
-//              InkWell(
-//                onTap: () {
-//
-//                  Navigator.of(context).push(PageRouteBuilder(
-//                      pageBuilder: (_, __, ___) => new MyHomePageT5()));
-//
-//                },
-//                child: Container(
-//                  padding: EdgeInsets.symmetric(horizontal: 8),
-//                  margin: EdgeInsets.only(left: Dimens.space2,right: Dimens.space2),
-//                  height: 60,
-//                  child: Column(
-//                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                    children: [
-//                      Icon(Icons.menu_rounded),
-//                      Text(
-//                        LocalManager.translate(word: 'القائمة'),
-//                        style: TextStyle(color: Colors.white, fontSize: 12),
-//                      )
-//                    ],
-//                  ),
-//                ),
-//              ),
               InkWell(
                 onTap: () {},
                 child: Container(
@@ -330,21 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (_, __, ___) =>
-
-                      new BlocProvider(
-                            create: (context) => LoginBloc(InitialState()),
-                            child: chooseLogin(),
-                          ),
-                      transitionDuration: Duration(milliseconds: 600),
-                      transitionsBuilder:
-                          (_, Animation<double> animation, __, Widget child) {
-                        return Opacity(
-                          opacity: animation.value,
-                          child: child,
-                        );
-                      }));
+                  Navigator.of(context).push(LoginScreen.getRoute());
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8),
@@ -354,9 +310,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Icon(Icons.person),
+                      Icon(Icons.login),
                       Text(
-                        LocalManager.translate(word: 'الملف الشخصي'),
+                        LocalManager.translate(word: 'تسجيل الدخول'),
                         style: TextStyle(color: Colors.white, fontSize: 12),
                       )
                     ],
@@ -416,7 +372,6 @@ class TenantCard extends StatelessWidget {
     return Container(
       width: Dimens.space92,
       height: Dimens.space160,
-//      color: Colors.green,
       child: Padding(
         padding:
             const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 4.0, top: 3.0),
@@ -445,7 +400,6 @@ class TenantCard extends StatelessWidget {
               Container(
                 height: Dimens.space92,
                 width: Dimens.space92,
-
                 decoration: BoxDecoration(
                   boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.black54)],
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -461,9 +415,9 @@ class TenantCard extends StatelessWidget {
                     child: image == null || image.isEmpty?
                        Image.asset(
                         'assets/icon/bank.png',
-                        height: Dimens.space96,
-                        fit: BoxFit.cover,
-                      ): Image.memory(base64Decode(image),height: Dimens.space96 ,fit: BoxFit.fill,)
+                        height: 60,
+                        width: 60,
+                      ): Image.memory(base64Decode(image),height: 60,width: 60 ,fit: BoxFit.cover,)
                 ),
                 ),
               ),

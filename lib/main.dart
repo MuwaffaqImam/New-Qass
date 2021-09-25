@@ -37,7 +37,6 @@ class MyStartingHomePage extends StatelessWidget {
     return Scaffold(
       drawer: MenuScreen(),
       appBar: AppBar( backgroundColor: Color(0xFF23252E),
-
         title: Text(
         LocalManager.translate(word: "طابور"),
         style: TextStyle(

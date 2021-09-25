@@ -1,0 +1,3 @@
+enum Rout{MAIN_SCREEN, BOOk_TICKET_SCREEN}
+
+

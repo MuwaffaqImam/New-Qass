@@ -5,12 +5,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_template/_qaas/bloc/tenants/tenants_bloc.dart';
+import 'package:food_template/_qaas/models/PrefrenceManager.dart';
 import 'package:food_template/_qaas/models/RegisterModel.dart';
 import 'package:food_template/_qaas/models/Token.dart';
-
 import 'package:food_template/_qaas/network/Api.dart';
-import 'package:food_template/_qaas/res/constant.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
 
 import 'login_event.dart';
 import 'login_state.dart';
@@ -45,6 +44,80 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
     } else if (event is Reset) yield InitialState();
   }
+
+  Stream<LoginState> _mapRegisterToState(RegisterUser event) async* {
+    yield LoginLoading();
+    try {
+      final bool success =
+          await register(email: event.email, password: event.password);
+      yield RegisterSuccess();
+    } catch (_) {
+      yield LoginFailure("error $_");
+    }
+  }
+}
+
+Stream<LoginState> _mapLoginToState(LoginWithEmailAndPhone event) async* {
+  yield LoginLoading();
+  try {
+    final Token token =
+        await login(password: event.password, email: event.username);
+    yield LoginSuccess(token);
+  } catch (_) {
+    yield LoginFailure("error $_");
+  }
+}
+
+Future<Token> login({String email, String password}) async {
+  print('login .... with username : $email, and pass :$password');
+  final response =
+      await http.post('${Api.BASE_URL_LOGIN}${Api.POST_LOGIN}', headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    'authorization': Api.buildingBasicAuthorization()
+  }, body: {
+    "username": "keylife",
+    "grant_type": "password",
+    "password": "Aa_123456",
+    "scope": ""
+  });
+  print("Requesting ...");
+  print(response.request.url);
+  print('response.body');
+  print(response.body);
+  if (response.statusCode == 200) {
+    var token = Token.fromJson(json.decode(response.body));
+    PreferenceManager.saveTokenToPref(token);
+    return token;
+  }
+  throw Exception('error');
+}
+
+Future<bool> register({String password, String email}) async {
+  print('login .... with username : $email, and pass :$password');
+  final response = await http.post('${Api.BASE_URL}${Api.REGISTER}',
+
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        'authorization': Api.buildingBasicAuthorization()
+      },
+      body: {
+        "username": "$email",
+        "email": "$email",
+        "password": "$password",
+        "locationId": "888348834sjdsdjjssjssd334",
+        "Role": "user"
+      });
+  print("Requesting ...");
+  print(response.request.url);
+  print('response.body');
+  print(response.body);
+  if (response.statusCode == 200) {
+    print('Success Registration');
+    await login(email: email, password: password);
+    return true;
+  }
+  throw Exception('error');
+}
 
 //   loginWithFacebook() async {
 //     dynamic _profile;
@@ -163,107 +236,3 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 // //      return LoggedLoginLoginFailure(Exception.toString());
 //     }
 //   }
-
-  Stream<LoginState> _mapRegisterToState(RegisterUser event) async* {
-    yield LoginLoading();
-    try {
-      final bool success =
-          await register(email: event.email, password: event.password);
-      yield RegisterSuccess();
-    } catch (_) {
-      yield LoginFailure("error $_");
-    }
-  }
-}
-
-Stream<LoginState> _mapLoginToState(LoginWithEmailAndPhone event) async* {
-  yield LoginLoading();
-  try {
-    final Token token =
-        await login(password: event.password, username: event.username);
-    yield LoginSuccess(token);
-  } catch (_) {
-    yield LoginFailure("error $_");
-  }
-}
-
-Future<Token> login({String username, String password}) async {
-  print('login ....');
-  final response = await http.post('${Api.BASE_URL_LOGIN}${Api.POST_LOGIN}', headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-    'authorization': Api.buildingBasicAuthorization()
-  }, body: {
-    "username": "keylife",
-    "grant_type": "password",
-    "password": "Aa_123456",
-    "scope": ""
-  });
-  print("Requesting ...");
-  print(response.request.url);
-  print('response.body');
-  print(response.body);
-  if (response.statusCode == 200) {
-    return Token.fromJson(json.decode(response.body));
-  }
-  throw Exception('error');
-}
-
-Future<bool> register({String password, String email}) async {
-  print('Register ....');
-  final response = await http.post(
-      Uri.https(
-        Api.BASE_URL_LOGIN,
-        '${Api.REGISTER}',
-      ),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        'authorization': Api.buildingBasicAuthorization()
-      },
-      body: {
-        "email": "$email",
-        "password": "$password",
-        "locationId": "888348834sjdsdjjssjssd334",
-        "Role": "user"
-      });
-  print("Requesting ...");
-  print(response.request.url);
-  print('response.body');
-  print(response.body);
-  if (response.statusCode == 200) {
-    return true;
-  }
-  throw Exception('error');
-}
-
-Future<RegisterResponseModel> _register(RegisterRequestModel model) async {
-  print('${Api.BASE_URL}${Api.REGISTER}');
-  Map<String, dynamic> body = RegisterRequestModel().toMap(model);
-//  Map<String, dynamic> body = {
-//    "username": "string",
-//    "email": "moofiy@a.com",
-//    "password": "123456789",
-//    "locationId": "5555"
-//  };
-  print(body.toString());
-
-  var response = await http.post(
-      Uri.https(
-        Api.BASE_URL,
-        '${Api.REGISTER}',
-      ),
-      headers: Api.buildingBasicAuthorization(),
-      body: body);
-
-  print('response....');
-  print(RegisterRequestModel().toMap(model).toString());
-  print(response.statusCode);
-
-  if (response.statusCode > 200 && response.statusCode < 400) {
-    final body = json.decode(response.body);
-
-    RegisterResponseModel registerResponseModel =
-        RegisterResponseModel().fromMap(body);
-
-    return registerResponseModel;
-  }
-}

@@ -41,7 +41,7 @@ class ServiceProvided {
     endTime = json['endTime']?? "endTime";
     locationId = json['locationId'];
     serviceId = json['serviceId'];
-    location = json['location']?? "عمار الأردن";
+    location = json['location'];
     service =  new Service.fromJson(json['service']);
     users = json['users'];
     chr = json['chr'];

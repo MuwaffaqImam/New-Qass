@@ -71,8 +71,6 @@ class BranchesScreen extends StatelessWidget {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     var _appBar = PreferredSize(
@@ -151,21 +149,7 @@ class BranchCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(PageRouteBuilder(
-              pageBuilder: (_, __, ___) => new BlocProvider(
-                create: (_) => TenantsBloc()..add(TenantServices(branch.id)),
-                child: new ServiceScreen(
-                  title: branch.name,
-                ),
-              ),
-              transitionDuration: Duration(milliseconds: 600),
-              transitionsBuilder:
-                  (_, Animation<double> animation, __, Widget child) {
-                return Opacity(
-                  opacity: animation.value,
-                  child: child,
-                );
-              }));
+          Navigator.of(context).push(ServiceScreen.getRoute(branch));
         },
         child: Container(
           height: 140.0,
@@ -207,13 +191,15 @@ class BranchCard extends StatelessWidget {
                               size: 16.0,
                               color: Colors.white,
                             ),
-                            Padding(padding: EdgeInsets.only(top: 2.0,left: 8)),
+                            Padding(
+                                padding: EdgeInsets.only(top: 2.0, left: 8)),
                             Text(branch.phone ?? 'عمان - الأردن',
                                 style: _txtStyleSub)
                           ],
                         ),
                       ),
-                      Padding(padding: const EdgeInsets.only(top: 4.9),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.9),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -223,7 +209,8 @@ class BranchCard extends StatelessWidget {
                               size: 16.0,
                               color: Colors.white,
                             ),
-                            Padding(padding: EdgeInsets.only(top: 2.0,left: 8)),
+                            Padding(
+                                padding: EdgeInsets.only(top: 2.0, left: 8)),
                             Text(branch.phone ?? '0799999999',
                                 style: _txtStyleSub)
                           ],
@@ -240,7 +227,8 @@ class BranchCard extends StatelessWidget {
                               size: 16.0,
                               color: Colors.white,
                             ),
-                            Padding(padding: EdgeInsets.only(top: 2.0,left: 8)),
+                            Padding(
+                                padding: EdgeInsets.only(top: 2.0, left: 8)),
                             Text(branch.email ?? 'm.zizo@edu.jo',
                                 style: _txtStyleSub)
                           ],
@@ -278,5 +266,3 @@ class BranchCard extends StatelessWidget {
     );
   }
 }
-
-

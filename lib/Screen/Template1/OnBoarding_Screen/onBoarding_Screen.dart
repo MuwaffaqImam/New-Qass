@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:food_template/_qaas/screens/Choose_Login.dart';
+import 'package:food_template/_qaas/screens/LoginScreen.dart';
 
 import 'Choose_Login.dart';
 
@@ -285,8 +285,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       bottomSheet: _currentPage == _numPages - 1
           ? InkWell(
               onTap: () {
-                Navigator.of(context).pushReplacement(PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => new chooseLogin()));
+                // Navigator.of(context).pushReplacement(PageRouteBuilder(
+                //     pageBuilder: (_, __, ___) => new LoginScreen()));
               },
               child: Container(
                 height: 60.0,
